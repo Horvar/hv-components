@@ -1,0 +1,151 @@
+// ==============================
+// Vars (можно переопределять)
+// ==============================
+$topScreenOffset: 200px;
+
+:root {
+  --huder-top-offset: #{$topScreenOffset}; // JS может перезаписать при наличии .screen-top
+
+  // Высоты
+  --huder-h-expanded: 100px;
+  --huder-h-compact: 56px;
+
+  // Тайминги/тайминг-функции
+  --huder-tr-move: 0.22s;
+  --huder-tr-height: 0.18s;
+  --huder-ease: ease;
+
+  // Для slide FX (enter/leave раздельно, задаёт JS)
+  --huder-fx-enter-dur: 220ms;
+  --huder-fx-leave-dur: 220ms;
+  --huder-fx-easing: ease;
+}
+
+// ==============================
+// Debug sentinel
+// ==============================
+.screen-top {
+  width: 100%;
+  height: $topScreenOffset;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  background: #000;
+  border: 1px solid magenta;
+  opacity: 0.9;
+  box-sizing: border-box;
+}
+
+// ==============================
+// Базовая шапка (.huder)
+// ==============================
+.huder {
+  width: 100%;
+  height: var(--huder-h-expanded);
+  box-sizing: border-box;
+
+  // обычные транзишны (без transform)
+  transition:
+    height var(--huder-tr-height) var(--huder-ease),
+    background-color 0.2s,
+    border-color 0.2s;
+
+  // служебное отключение любых анимаций на 1 кадр
+  &.huder--no-anim {
+    transition: none !important;
+  }
+
+  // когда fixed — позиционируем и даём возможность анимировать transform (для reveal)
+  &.is-fixed {
+    position: fixed;
+    top: var(--huder-top-offset, 0px);
+    left: 0;
+    z-index: 100;
+
+    transition:
+      transform var(--huder-tr-move) var(--huder-ease),
+      height var(--huder-tr-height) var(--huder-ease),
+      background-color 0.2s,
+      border-color 0.2s;
+
+    will-change: transform;
+    transform: translateY(0);
+  }
+
+  // компактная высота
+  &.is-compact {
+    height: var(--huder-h-compact);
+  }
+
+  // reveal: прячем root целиком РОВНО на 100% собственной высоты
+  // (без top-offset — никаких «улётов»)
+  &.is-fixed.is-hidden {
+    transform: translateY(-100%);
+  }
+  &.is-fixed:not(.is-hidden) {
+    transform: translateY(0);
+  }
+}
+
+// Контентная обёртка (примерные стили)
+.huder__wrapper {
+  height: 100%;
+  padding: 0 32px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #999;
+  border-bottom: 4px solid #000;
+}
+
+.huder__square {
+  width: 32px;
+  height: 32px;
+  background: #000;
+}
+
+// ==============================
+// Рельса для анимации fixed↔static — .huder__rail
+// (именно она едет при входе/выходе в fixed)
+// ==============================
+.huder__rail {
+  height: 100%;
+  transform: translateY(0);
+}
+
+// включен fx slide? анимируем transform у rail
+.huder.huder--fx-slide.is-fixed .huder__rail {
+  will-change: transform;
+  transition: transform var(--huder-fx-enter-dur) var(--huder-fx-easing);
+}
+
+// стартовое/финальное положение при входе/выходе из fixed
+// ВАЖНО: тут только -100% (никаких top-offset)!
+.huder.huder--fx-slide.is-fixed.fx-enter .huder__rail,
+.huder.huder--fx-slide.is-fixed.fx-leave .huder__rail {
+  transform: translateY(-100%);
+}
+
+// для leave — своя длительность
+.huder.huder--fx-slide.is-fixed.fx-leave .huder__rail {
+  transition-duration: var(--huder-fx-leave-dur);
+}
+
+// служебный «снять анимацию на кадр» — JS ставит при фиксации позиций,
+// чтобы в static не было обратного «возврата»
+.huder__rail.rail--no-anim {
+  transition: none !important;
+}
+
+// ==============================
+// Spacer (компенсация места под fixed)
+// Управляется ТОЛЬКО из JS одним числом (замороженная высота)
+// ==============================
+.huder-spacer {
+  height: 0; // без transition — чтобы не «прыгало»
+}
