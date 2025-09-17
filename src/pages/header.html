@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hv-header playground</title>
+    <style>
+      /* --- Мини-стили панели --- */
+      .hv-play {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 320px;
+        max-height: 80vh;
+        overflow: auto;
+        padding: 16px 8px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #ddd;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-radius: 12px;
+        font:
+          14px/1.4 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+      }
+      .hv-play::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+      .hv-play__box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 8px;
+        box-sizing: border-box;
+        border-radius: 16px;
+        background: #f0f0f0;
+      }
+      .hv-play__title {
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+      .hv-play__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .hv-play__row--full {
+        grid-template-columns: 1fr;
+      }
+      .hv-play label {
+        font-size: 12px;
+        color: #333;
+      }
+      .hv-play input[type='number'],
+      .hv-play select,
+      .hv-play input[type='text'] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      .hv-play input[type='checkbox'] {
+        transform: translateY(1px);
+        margin-right: 6px;
+      }
+      .hv-play select:disabled,
+      .hv-play input:disabled {
+        opacity: 0.5;
+        background: transparent;
+      }
+      .hv-play__btns {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .hv-play button {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+        background: #f5f5f5;
+        cursor: pointer;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .hv-play button.is-primary {
+        background: #111;
+        color: #fff;
+        border-color: #111;
+      }
+      .hv-play small {
+        color: #666;
+      }
+      .hv-play__subtitle {
+        position: relative;
+        color: #999;
+        z-index: 1;
+      }
+      .hv-play__subtitle span {
+        background: #fff;
+        padding: 0 0.25em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hv-header">
+      <div class="hv-header__content">
+        <!-- контент шапки -->
+      </div>
+    </div>
+
+    <main>
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <form class="hv-play" id="hvPlay">
+      <div class="hv-play__title">hv-header playground</div>
+
+      <!-- ========== Позиционирование ========== -->
+      <h3 class="hv-play__subtitle"><span>Позиционирование</span></h3>
+      <div class="hv-play__box">
+        <div class="hv-play__row">
+          <label
+            title="Режим позиционирования: static (в потоке), fixed (всегда закреплён), fixedAfter (закрепляется после порога)"
+          >
+            Mode
+            <select name="mode">
+              <option value="static">static</option>
+              <option value="fixed">fixed</option>
+              <option value="fixedAfter" selected>fixedAfter</option>
+            </select>
+          </label>
+
+          <label title="Порог (px) для mode=fixedAfter: после какого скролла включать fixed">
+            Threshold (px)
+            <input type="number" name="threshold" value="500" step="1" min="0" />
+          </label>
+        </div>
+      </div>
+
+      <!-- ========== Поведение на скролле ========== -->
+      <h3 class="hv-play__subtitle"><span>Поведение на скролле</span></h3>
+      <div class="hv-play__box">
+        <div class="hv-play__row">
+          <label
+            title="none — без реакции; shrink — сжимается вниз/раскрывается вверх; reveal — скрывается вниз/показывается вверх"
+          >
+            Scroll behavior
+            <select name="scrollBehavior">
+              <option value="none">none</option>
+              <option value="shrink">shrink</option>
+              <option value="reveal" selected>reveal</option>
+            </select>
+          </label>
+        </div>
+        <div class="hv-play__row">
+          <label title="Порог ВВЕРХ: shrink→expand, reveal→show">
+            upDelta
+            <input type="number" name="upDelta" value="24" step="1" min="0" />
+          </label>
+          <label title="Порог ВНИЗ: shrink→compact, reveal→hide">
+            downDelta
+            <input type="number" name="downDelta" value="24" step="1" min="0" />
+          </label>
+          <div></div>
+        </div>
+      </div>
+
+      <!-- ========== Анимации перехода состояний (FX) ========== -->
+      <h3 class="hv-play__subtitle"><span>Анимации перехода состояний (FX)</span></h3>
+      <div class="hv-play__box">
+        <div class="hv-play__row hv-play__row--full">
+          <label title="Анимировать первичный вход при mode='fixed'. Для других режимов не применяется.">
+            <input type="checkbox" name="fixFxOnInit" checked /> fixFxOnInit
+          </label>
+        </div>
+        <div class="hv-play__row">
+          <label title="FX перехода static↔fixed (анимируется .hv-header__content)">
+            Fix FX
+            <select name="fixFx">
+              <option value="none">none</option>
+              <option value="slide" selected>slide</option>
+              <option value="fade">fade</option>
+            </select>
+          </label>
+
+          <label title="CSS timing-function для FX (например: ease, linear, ease-out, cubic-bezier(...))">
+            FX easing
+            <input type="text" name="fixFxEasing" value="ease" />
+          </label>
+        </div>
+        <div class="hv-play__row">
+          <label title="Длительность входной анимации при входе в fixed (мс)">
+            FX enter (ms)
+            <input type="number" name="fixFxEnterDuration" value="220" step="10" min="0" />
+          </label>
+
+          <label title="Длительность выходной анимации при уходе из fixed (мс)">
+            FX leave (ms)
+            <input type="number" name="fixFxLeaveDuration" value="220" step="10" min="0" />
+          </label>
+        </div>
+      </div>
+
+      <!-- ========== Визуал и отладка ========== -->
+      <h3 class="hv-play__subtitle"><span>Дополнительно</span></h3>
+      <div class="hv-play__box">
+        <div class="hv-play__row hv-play__row--full">
+          <label
+            title="Добавляет класс .is-top на самом верху страницы (можно сделать шапку прозрачной, убрать тень и т.п.)"
+          >
+            <input type="checkbox" name="overlayAtTop" checked /> overlayAtTop
+          </label>
+
+          <label title="Печатает вспомогательные логи в консоль"> <input type="checkbox" name="debug" /> debug </label>
+        </div>
+      </div>
+
+      <!-- ========== Действия ========== -->
+      <div class="hv-play__btns">
+        <button
+          type="button"
+          data-action="recreate"
+          title="Полностью пересоздаёт шапку и сбрасывает внутреннее состояние"
+        >
+          Recreate
+        </button>
+        <button type="button" data-action="reset" title="Вернуть значения по умолчанию и пересоздать шапку">
+          Reset
+        </button>
+      </div>
+
+      <div class="hv-play__btns">
+        <button type="button" data-action="downloadBase" title="Скачать базовые файлы: _hv-header.js и _hv-header.scss">
+          Download
+        </button>
+        <button type="button" data-action="copyInit" title="Скопировать код инициализации с текущими настройками">
+          Copy
+        </button>
+      </div>
+    </form>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      import { hvHeader } from '../scripts/_hv-header.js';
+
+      const form = document.getElementById('hvPlay');
+      const recreateBtn = form.querySelector('[data-action="recreate"]');
+      const resetBtn = form.querySelector('[data-action="reset"]');
+      const downloadBtn = form.querySelector('[data-action="downloadBase"]');
+      const copyInitBtn = form.querySelector('[data-action="copyInit"]');
+
+      // Шорткаты на элементы
+      const $ = (name) => form.elements[name];
+      const els = {
+        mode: $('mode'),
+        scrollBehavior: $('scrollBehavior'),
+        threshold: $('threshold'),
+        fixFx: $('fixFx'),
+        fixFxEnterDuration: $('fixFxEnterDuration'),
+        fixFxLeaveDuration: $('fixFxLeaveDuration'),
+        fixFxEasing: $('fixFxEasing'),
+        fixFxOnInit: $('fixFxOnInit'),
+        downDelta: $('downDelta'),
+        upDelta: $('upDelta'),
+        overlayAtTop: $('overlayAtTop'),
+        debug: $('debug'),
+      };
+
+      // ===== helpers =====
+      function setDisabled(el, on, why = '') {
+        el.disabled = !!on;
+        const label = el.closest('label') || el.parentElement;
+        if (!label) return;
+        const baseTitle = label.getAttribute('data-base-title') || label.getAttribute('title') || '';
+        if (!label.hasAttribute('data-base-title')) label.setAttribute('data-base-title', baseTitle);
+        label.title = on && why ? `${baseTitle} — (не используется: ${why})` : baseTitle;
+      }
+
+      function enforceInterlocks() {
+        const mode = els.mode.value;
+        const beh = els.scrollBehavior.value;
+        const inStatic = mode === 'static';
+        const inFixed = mode === 'fixed';
+        const inFixedAfter = mode === 'fixedAfter';
+
+        setDisabled(els.threshold, !inFixedAfter, inFixed ? 'mode=fixed' : inStatic ? 'mode=static' : '');
+        setDisabled(els.scrollBehavior, inStatic, 'mode=static');
+
+        const deltasOff = inStatic || beh === 'none';
+        setDisabled(els.downDelta, deltasOff, inStatic ? 'mode=static' : 'scrollBehavior=none');
+        setDisabled(els.upDelta, deltasOff, inStatic ? 'mode=static' : 'scrollBehavior=none');
+
+        const fxNone = els.fixFx.value === 'none';
+        const ffInit = els.fixFxOnInit.checked;
+
+        setDisabled(els.fixFxOnInit, !inFixed, inStatic ? 'mode=static' : inFixedAfter ? 'mode=fixedAfter' : '');
+
+        if (inStatic) {
+          setDisabled(els.fixFx, true, 'mode=static');
+          setDisabled(els.fixFxEnterDuration, true, 'mode=static');
+          setDisabled(els.fixFxLeaveDuration, true, 'mode=static');
+          setDisabled(els.fixFxEasing, true, 'mode=static');
+        } else if (inFixed) {
+          const groupOff = !ffInit;
+          setDisabled(els.fixFx, groupOff, groupOff ? 'fixFxOnInit=false' : '');
+          const noTimings = groupOff || fxNone;
+          setDisabled(els.fixFxEnterDuration, noTimings, groupOff ? 'fixFxOnInit=false' : fxNone ? 'fixFx=none' : '');
+          setDisabled(els.fixFxLeaveDuration, noTimings, groupOff ? 'fixFxOnInit=false' : fxNone ? 'fixFx=none' : '');
+          setDisabled(els.fixFxEasing, noTimings, groupOff ? 'fixFxOnInit=false' : fxNone ? 'fixFx=none' : '');
+        } else {
+          const enterOff = beh === 'reveal';
+          setDisabled(els.fixFx, false, '');
+          setDisabled(
+            els.fixFxEnterDuration,
+            enterOff || fxNone,
+            enterOff ? 'reveal: вход скрытый' : fxNone ? 'fixFx=none' : ''
+          );
+          setDisabled(els.fixFxLeaveDuration, fxNone, fxNone ? 'fixFx=none' : '');
+          setDisabled(els.fixFxEasing, fxNone, fxNone ? 'fixFx=none' : '');
+        }
+
+        setDisabled(els.overlayAtTop, inStatic, 'mode=static');
+      }
+
+      const readForm = () => {
+        const num = (el, def = 0) => {
+          const n = Number(el.value);
+          return Number.isFinite(n) ? n : def;
+        };
+        return {
+          root: '.hv-header',
+          mode: els.mode.value,
+          threshold: num(els.threshold, 0),
+          scrollBehavior: els.scrollBehavior.value,
+          fixFx: els.fixFx.value,
+          fixFxEnterDuration: num(els.fixFxEnterDuration, 220),
+          fixFxLeaveDuration: num(els.fixFxLeaveDuration, 220),
+          fixFxEasing: (els.fixFxEasing.value || 'ease').trim(),
+          fixFxOnInit: els.fixFxOnInit.checked,
+          downDelta: num(els.downDelta, 24),
+          upDelta: num(els.upDelta, 24),
+          overlayAtTop: els.overlayAtTop.checked,
+          debug: els.debug.checked,
+        };
+      };
+
+      function blink(btn, okText) {
+        const old = btn.textContent;
+        btn.textContent = okText;
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = old;
+          btn.disabled = false;
+        }, 900);
+      }
+
+      // ===== download / copy =====
+      function downloadBase() {
+        const files = [
+          ['/components/hv-header/_hv-header.js', '_hv-header.js'],
+          ['/components/hv-header/_hv-header.scss', '_hv-header.scss'],
+        ];
+        for (const [url, name] of files) {
+          const a = document.createElement('a');
+          a.href = url; // статический URL из /public — отдаётся «как есть»
+          a.download = name;
+          a.rel = 'noopener';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+        blink(downloadBtn, '✓ Downloaded');
+      }
+
+      async function copyInit() {
+        const o = readForm();
+        const obj = {
+          root: '.hv-header',
+          mode: o.mode,
+          ...(o.mode === 'fixedAfter' ? { threshold: o.threshold } : {}),
+          scrollBehavior: o.scrollBehavior,
+          ...(o.scrollBehavior !== 'none' ? { downDelta: o.downDelta, upDelta: o.upDelta } : {}),
+          fixFx: o.fixFx,
+          fixFxEnterDuration: o.fixFxEnterDuration,
+          fixFxLeaveDuration: o.fixFxLeaveDuration,
+          fixFxEasing: o.fixFxEasing,
+          ...(o.mode === 'fixed' ? { fixFxOnInit: o.fixFxOnInit } : {}),
+          overlayAtTop: o.overlayAtTop,
+          debug: o.debug,
+        };
+        const serialize = (v) =>
+          typeof v === 'string'
+            ? `'${v.replace(/'/g, "\\'")}'`
+            : typeof v === 'boolean' || Number.isFinite(v)
+              ? String(v)
+              : 'null';
+        const lines = Object.entries(obj).map(([k, v]) => `  ${k}: ${serialize(v)},`);
+        const code = `import { hvHeader } from '../scripts/_hv-header.js';
+
+new hvHeader({
+${lines.join('\n')}
+});`;
+        try {
+          await navigator.clipboard.writeText(code);
+          blink(copyInitBtn, '✓ Copied');
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          blink(copyInitBtn, '✓ Copied');
+        }
+      }
+
+      // ===== fallbacks (на случай, если fetch не нашёл пути) =====
+      const DEFAULT_SCSS_FALLBACK = `/* … ваш SCSS fallback из демо … */`;
+      const DEFAULT_JS_FALLBACK = `/* Fallback of _hv-header.js */\nexport ${hvHeader.toString()};`;
+
+      // ===== playground state =====
+      let header = null;
+
+      function recreate() {
+        if (header) {
+          try {
+            header.destroy();
+          } catch (e) {}
+          header = null;
+        }
+        header = new hvHeader(readForm());
+        enforceInterlocks();
+      }
+
+      function applyLive() {
+        if (!header) return;
+        const o = readForm();
+        header.setMode(o.mode);
+        header.setThreshold(o.threshold);
+        header.o.scrollBehavior = o.scrollBehavior;
+        header.o.downDelta = o.downDelta;
+        header.o.upDelta = o.upDelta;
+        header.o.overlayAtTop = o.overlayAtTop;
+        header.o.debug = o.debug;
+        header.o.fixFx = o.fixFx;
+        header.o.fixFxEnterDuration = o.fixFxEnterDuration;
+        header.o.fixFxLeaveDuration = o.fixFxLeaveDuration;
+        header.o.fixFxEasing = o.fixFxEasing;
+        header.o.fixFxOnInit = o.fixFxOnInit;
+        header._initFxCssHooks();
+        header._recalcAll();
+        header._updateState(true);
+        enforceInterlocks();
+      }
+
+      // старт
+      recreate();
+
+      // live-апдейт на изменения формы
+      form.addEventListener('change', (e) => {
+        applyLive();
+        if (['mode', 'scrollBehavior', 'fixFx', 'fixFxOnInit'].includes(e.target.name)) enforceInterlocks();
+      });
+      form.addEventListener('input', (e) => {
+        if (
+          ['threshold', 'downDelta', 'upDelta', 'fixFxEnterDuration', 'fixFxLeaveDuration', 'fixFxEasing'].includes(
+            e.target.name
+          )
+        )
+          applyLive();
+        if (['mode', 'scrollBehavior', 'fixFx', 'fixFxOnInit'].includes(e.target.name)) enforceInterlocks();
+      });
+
+      recreateBtn.addEventListener('click', recreate);
+      resetBtn.addEventListener('click', () => {
+        form.reset();
+        recreate();
+      });
+      downloadBtn.addEventListener('click', downloadBase);
+      copyInitBtn.addEventListener('click', copyInit);
+    </script>
+  </body>
+</html>

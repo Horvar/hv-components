@@ -1,6 +1,6 @@
 @use 'styles/reset' as *;
 @use 'styles/hv-header' as *;
-@use 'styles/modal' as *;
+//@use 'src/styles/modal' as *;
 
 button {
   display: flex;
@@ -11,7 +11,7 @@ main {
   flex-direction: column;
   gap: 12vh;
 
-  background: #c6c6c6;
+  background: #b6b6b6;
 
   padding: 6vh 0;
 
