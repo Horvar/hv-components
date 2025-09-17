@@ -1,6 +1,6 @@
 // hv-header.js — режимы: 'static' | 'fixed' | 'fixedAfter'
 // Взаимоисключающее поведение на скролл: scrollBehavior = 'none' | 'shrink' | 'reveal'
-// Slide static↔fixed делает .hv-header__content; reveal/shrink — классы на .hv-header
+// FX static↔fixed делает .hv-header__content; reveal/shrink — классы на .hv-header
 
 export class hvHeader {
   constructor(opts = {}) {
@@ -21,12 +21,11 @@ export class hvHeader {
       upDelta: null,
 
       // LEGACY дельты (для обратной совместимости конфигов)
-      // shrink (вниз -> compact, вверх -> expanded)
+      // shrink
       shrinkShowDelta: 24,
       shrinkHideDelta: 24,
       shrinkInitiallyExpanded: true,
-
-      // reveal (вниз -> hide, вверх -> show)
+      // reveal
       revealShowDelta: 24,
       revealHideDelta: 24,
       revealInitiallyHidden: false, // (для режима fixed; в fixedAfter игнорируется — см. _updateState)
@@ -45,6 +44,7 @@ export class hvHeader {
       // Визуалка у самого верха
       overlayAtTop: true,
 
+      // Debug: false | true (уровень 1) | 2 (подробно)
       debug: false,
     };
     this.o = { ...defaults, ...opts };
@@ -107,6 +107,9 @@ export class hvHeader {
     this._headerRO = null;
     this._sentinelRO = null;
 
+    // Debug
+    this._lastLog = Object.create(null);
+
     // Bind
     this._onScroll = this._onScroll.bind(this);
     this._onResize = this._onResize.bind(this);
@@ -122,7 +125,7 @@ export class hvHeader {
     window.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onResize, { passive: true });
 
-    if (this.o.debug) console.log('[Header] init', this.o);
+    this._dbg(1, 'init', { options: this.o });
   }
 
   // ---------- Публичное API ----------
@@ -143,11 +146,13 @@ export class hvHeader {
       this._recalcAll();
       this._updateState(true);
     }
+    this._logState(`setMode(${mode})`);
   }
   setThreshold(th) {
     this.o.threshold = th;
     this._recalcThreshold();
     this._updateState();
+    this._logState(`setThreshold(${th})`);
   }
   setSentinel(elOrSelectorOrNull) {
     if (this._sentinelRO) {
@@ -158,6 +163,7 @@ export class hvHeader {
     this._recalcTopOffset();
     this._recalcThreshold();
     this._updateState();
+    this._logState('setSentinel');
   }
   enable() {
     if (this._enabled) return;
@@ -167,6 +173,7 @@ export class hvHeader {
     this._observe();
     this._recalcAll();
     this._updateState(true);
+    this._dbg(1, 'enabled');
   }
   disable() {
     if (!this._enabled) return;
@@ -174,6 +181,7 @@ export class hvHeader {
     window.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
     this._unobserve();
+    this._dbg(1, 'disabled');
   }
   destroy() {
     this.disable();
@@ -202,6 +210,7 @@ export class hvHeader {
     this._compLocked = false;
     this._compHeight = 0;
     this._fxBusy = false;
+    this._dbg(1, 'destroy');
   }
 
   // ---------- Внутрянка ----------
@@ -266,7 +275,7 @@ export class hvHeader {
     const offset = this.sentinel ? Math.max(0, Math.round(this.sentinel.getBoundingClientRect().height)) : 0;
     this.topOffset = offset;
     document.documentElement.style.setProperty('--hv-header-top-offset', `${offset}px`);
-    if (this.o.debug) console.log('[Header] topOffset =', offset);
+    this._logChange('topOffset', offset);
   }
 
   _recalcHeaderHeight() {
@@ -280,7 +289,7 @@ export class hvHeader {
 
   _recalcThreshold() {
     this.thresholdPx = this._resolveThresholdPx(this.o.threshold);
-    if (this.o.debug) console.log('[Header] thresholdPx =', this.thresholdPx);
+    this._logChange('thresholdPx', this.thresholdPx);
   }
 
   _resolveEl(input) {
@@ -326,7 +335,6 @@ export class hvHeader {
 
   // Базовая «высота компенсатора»: что считать границей снапа
   _getBaseHeaderHeight() {
-    // порядок приоритета: зафиксированная высота компенсации -> текущая высота -> фактическая высота spacer
     const spacerH = this.compensate === 'spacer' && this._spacer ? this._spacer.offsetHeight : 0;
     return Math.max(this._compHeight || 0, this.headerHeight || 0, spacerH || 0);
   }
@@ -334,35 +342,30 @@ export class hvHeader {
   // Находимся ли в зоне мгновенного снятия fixed: начало страницы + базовая высота
   _inSnapZone() {
     const base = this._getBaseHeaderHeight();
-    // небольшой люфт на пиксель, чтобы не дрожало на нуле
-    return window.scrollY <= base + 1;
+    return window.scrollY <= base + 1; // небольшой люфт
   }
 
   // Мгновенно сбросить всё к "обычному" статическому состоянию (без анимаций)
   _instantResetToStatic() {
-    // Глушим переходы на кадр и любые FX
     this.root.classList.add('hv-header--no-anim');
     this.rail.classList.add('rail--no-anim');
 
-    // Снимаем все классы состояния/FX
     this.root.classList.remove('is-fixed', 'is-hidden', 'is-compact', 'is-top', 'fx-enter', 'fx-leave');
     this._isHidden = false;
     this._isCompact = false;
     this._fixedEngaged = false;
 
-    // Отпускаем компенсацию
     this._compLocked = false;
     this._compHeight = 0;
     this._applyCompensation(0);
 
-    // Сброс занять сразу (reflow), затем вернуть возможность анимаций
     // force reflow
     this.root.offsetHeight;
     this.root.classList.remove('hv-header--no-anim');
     this.rail.classList.remove('rail--no-anim');
 
-    // Разрешаем апдейты
     this._fxBusy = false;
+    this._logState('instant reset to static');
   }
 
   // хотим ли входить во fixed уже компактным?
@@ -374,12 +377,11 @@ export class hvHeader {
 
   // ---------- Машина состояний ----------
   _updateState() {
-    // Если прямо сейчас идёт FX, но мы внезапно в зоне снапа — жёстко обрываем и сбрасываем всё
     if (this._fxBusy) {
       if (this.o.mode !== 'fixed' && this.root.classList.contains('is-fixed') && this._inSnapZone()) {
         this._instantResetToStatic();
       }
-      if (this._fxBusy) return; // если не сбросили — выходим
+      if (this._fxBusy) return;
     }
 
     const logicalY = window.scrollY + this.topOffset;
@@ -432,10 +434,8 @@ export class hvHeader {
     if (shouldFix && !this._fixedEngaged) {
       this._fixedEngaged = true;
 
-      // >>> При reveal ВСЕГДА заходим во fixed скрытыми, чтобы не было "вспышки"
-      const startHidden = this.o.scrollBehavior === 'reveal' ? true : false;
-
-      // если стартуем скрытыми — входной slide/fade FX не нужен
+      // При reveal ВСЕГДА заходим во fixed скрытыми, чтобы не было "вспышки"
+      const startHidden = this.o.scrollBehavior === 'reveal';
       const withFx = this.o.fixFx !== 'none' && !startHidden;
 
       this._enterFixed({
@@ -444,13 +444,12 @@ export class hvHeader {
         startHidden,
       });
 
-      // сбросим направление/накопление после входа
+      // сбросить направление/накопление после входа
       this._acc = 0;
       this._dir = 0;
     } else if (!shouldFix && this._fixedEngaged) {
       this._fixedEngaged = false;
 
-      // Если в момент выхода оказались в зоне снапа — жёстко без анимаций
       if (this._inSnapZone()) {
         this._instantResetToStatic();
       } else {
@@ -500,32 +499,34 @@ export class hvHeader {
         break;
 
       case 'shrink': {
-        // ВНИЗ -> compact ON, ВВЕРХ -> compact OFF
         const down = this._getDownDelta();
         const up = this._getUpDelta();
 
         if (this._dir === 1 && this._acc >= down) {
           this._setCompact(true);
           this._acc = 0;
+          this._dbg(1, 'shrink: compact ON');
         } else if (this._dir === -1 && this._acc >= up) {
           this._setCompact(false);
           this._acc = 0;
+          this._dbg(1, 'shrink: compact OFF');
         }
         this._setHidden(false);
         break;
       }
 
       case 'reveal': {
-        // ВНИЗ -> hide, ВВЕРХ -> show
         const down = this._getDownDelta();
         const up = this._getUpDelta();
 
         if (this._dir === 1 && this._acc >= down) {
           this._setHidden(true);
           this._acc = 0;
+          this._dbg(1, 'reveal: hidden ON');
         } else if (this._dir === -1 && this._acc >= up) {
           this._setHidden(false);
           this._acc = 0;
+          this._dbg(1, 'reveal: hidden OFF');
         }
         break;
       }
@@ -561,19 +562,20 @@ export class hvHeader {
 
     // 5) если глушили — вернуть анимации после reflow
     if (startHidden) {
-      // force reflow
-      this.root.offsetHeight;
+      this.root.offsetHeight; // force reflow
       this.root.classList.remove('hv-header--no-anim');
     }
 
     // 6) если стартуем скрыто — входной FX не нужен
-    if (startHidden || !withFx || this.o.fixFx === 'none') return;
+    if (startHidden || !withFx || this.o.fixFx === 'none') {
+      this._logState('enter fixed');
+      return;
+    }
 
     // 7) стандартный входной FX через rail
     this.rail.classList.add('rail--no-anim');
     this.root.classList.add('fx-enter');
-    // force reflow
-    this.rail.offsetHeight;
+    this.rail.offsetHeight; // force reflow
 
     this._fxBusy = true;
     requestAnimationFrame(() => {
@@ -582,6 +584,7 @@ export class hvHeader {
         this.root.classList.remove('fx-enter');
         setTimeout(() => {
           this._fxBusy = false;
+          this._logState('enter fixed (fx done)');
         }, this.o.fixFxEnterDuration + 50);
       });
     });
@@ -595,14 +598,14 @@ export class hvHeader {
     if (this.o.scrollBehavior === 'reveal' && this._isHidden) {
       this.root.classList.add('hv-header--no-anim');
       this._setHidden(false);
-      // force reflow
-      this.root.offsetHeight;
+      this.root.offsetHeight; // force reflow
       this.root.classList.remove('hv-header--no-anim');
     }
 
     if (!withFx || this.o.fixFx === 'none') {
       this._unsetFixed();
       this._setHidden(false);
+      this._logState('leave fixed (no fx)');
       return;
     }
 
@@ -617,11 +620,11 @@ export class hvHeader {
       this.root.classList.remove('fx-leave');
       this._unsetFixed();
       this._setHidden(false);
-      // force reflow
-      this.rail.offsetHeight;
+      this.rail.offsetHeight; // force reflow
       requestAnimationFrame(() => {
         this.rail.classList.remove('rail--no-anim');
         this._fxBusy = false;
+        this._logState('leave fixed (fx done)');
       });
     };
 
@@ -667,5 +670,36 @@ export class hvHeader {
         this._isHidden = false;
       }
     }
+  }
+
+  // ---------- Debug helpers ----------
+  _dbg(level, ...args) {
+    // true -> 1, number -> number, else 0
+    let lvl = 0;
+    if (this.o.debug === true) lvl = 1;
+    else {
+      const n = Number(this.o.debug);
+      if (Number.isFinite(n)) lvl = n;
+    }
+    if (lvl >= level) console.log('[Header]', ...args);
+  }
+  _logChange(key, val) {
+    if (this._lastLog[key] !== val) {
+      this._lastLog[key] = val;
+      this._dbg(2, `${key} =`, val);
+    }
+  }
+  _logState(reason) {
+    if (!this.o.debug) return;
+    const snap = {
+      mode: this.o.mode,
+      fixed: this.root.classList.contains('is-fixed'),
+      compact: this._isCompact,
+      hidden: this._isHidden,
+      scrollY: Math.round(window.scrollY),
+      topOffset: this.topOffset,
+      thresholdPx: this.thresholdPx,
+    };
+    this._dbg(1, reason, snap);
   }
 }
