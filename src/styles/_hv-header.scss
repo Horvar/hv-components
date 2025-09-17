@@ -4,21 +4,21 @@
 $topScreenOffset: 200px;
 
 :root {
-  --huder-top-offset: #{$topScreenOffset}; // JS может перезаписать при наличии .screen-top
+  --hv-header-top-offset: #{$topScreenOffset}; // JS может перезаписать при наличии .screen-top
 
   // Высоты
-  --huder-h-expanded: 100px;
-  --huder-h-compact: 56px;
+  --hv-header-h-expanded: 100px;
+  --hv-header-h-compact: 56px;
 
   // Тайминги/тайминг-функции
-  --huder-tr-move: 0.22s;
-  --huder-tr-height: 0.18s;
-  --huder-ease: ease;
+  --hv-header-tr-move: 0.22s;
+  --hv-header-tr-height: 0.18s;
+  --hv-header-ease: ease;
 
   // Для slide FX (enter/leave раздельно, задаёт JS)
-  --huder-fx-enter-dur: 220ms;
-  --huder-fx-leave-dur: 220ms;
-  --huder-fx-easing: ease;
+  --hv-header-fx-enter-dur: 220ms;
+  --hv-header-fx-leave-dur: 220ms;
+  --hv-header-fx-easing: ease;
 }
 
 // ==============================
@@ -39,34 +39,34 @@ $topScreenOffset: 200px;
 }
 
 // ==============================
-// Базовая шапка (.huder)
+// Базовая шапка (.hv-header)
 // ==============================
-.huder {
+.hv-header {
   width: 100%;
-  height: var(--huder-h-expanded);
+  height: var(--hv-header-h-expanded);
   box-sizing: border-box;
 
   // обычные транзишны (без transform)
   transition:
-    height var(--huder-tr-height) var(--huder-ease),
+    height var(--hv-header-tr-height) var(--hv-header-ease),
     background-color 0.2s,
     border-color 0.2s;
 
   // служебное отключение любых анимаций на 1 кадр
-  &.huder--no-anim {
+  &.hv-header--no-anim {
     transition: none !important;
   }
 
   // когда fixed — позиционируем и даём возможность анимировать transform (для reveal)
   &.is-fixed {
     position: fixed;
-    top: var(--huder-top-offset, 0px);
+    top: var(--hv-header-top-offset, 0px);
     left: 0;
     z-index: 100;
 
     transition:
-      transform var(--huder-tr-move) var(--huder-ease),
-      height var(--huder-tr-height) var(--huder-ease),
+      transform var(--hv-header-tr-move) var(--hv-header-ease),
+      height var(--hv-header-tr-height) var(--hv-header-ease),
       background-color 0.2s,
       border-color 0.2s;
 
@@ -76,7 +76,7 @@ $topScreenOffset: 200px;
 
   // компактная высота
   &.is-compact {
-    height: var(--huder-h-compact);
+    height: var(--hv-header-h-compact);
   }
 
   // reveal: прячем root целиком РОВНО на 100% собственной высоты
@@ -90,7 +90,7 @@ $topScreenOffset: 200px;
 }
 
 // Контентная обёртка (примерные стили)
-.huder__wrapper {
+.hv-header__wrapper {
   height: 100%;
   padding: 0 32px;
   box-sizing: border-box;
@@ -99,46 +99,46 @@ $topScreenOffset: 200px;
   align-items: center;
   justify-content: space-between;
 
-  background: #999;
+  background: #fff;
   border-bottom: 4px solid #000;
 }
 
-.huder__square {
+.hv-header__square {
   width: 32px;
   height: 32px;
   background: #000;
 }
 
 // ==============================
-// Рельса для анимации fixed↔static — .huder__rail
+// Рельса для анимации fixed↔static — .hv-header__rail
 // (именно она едет при входе/выходе в fixed)
 // ==============================
-.huder__rail {
+.hv-header__rail {
   height: 100%;
   transform: translateY(0);
 }
 
 // включен fx slide? анимируем transform у rail
-.huder.huder--fx-slide.is-fixed .huder__rail {
+.hv-header.hv-header--fx-slide.is-fixed .hv-header__rail {
   will-change: transform;
-  transition: transform var(--huder-fx-enter-dur) var(--huder-fx-easing);
+  transition: transform var(--hv-header-fx-enter-dur) var(--hv-header-fx-easing);
 }
 
 // стартовое/финальное положение при входе/выходе из fixed
 // ВАЖНО: тут только -100% (никаких top-offset)!
-.huder.huder--fx-slide.is-fixed.fx-enter .huder__rail,
-.huder.huder--fx-slide.is-fixed.fx-leave .huder__rail {
+.hv-header.hv-header--fx-slide.is-fixed.fx-enter .hv-header__rail,
+.hv-header.hv-header--fx-slide.is-fixed.fx-leave .hv-header__rail {
   transform: translateY(-100%);
 }
 
 // для leave — своя длительность
-.huder.huder--fx-slide.is-fixed.fx-leave .huder__rail {
-  transition-duration: var(--huder-fx-leave-dur);
+.hv-header.hv-header--fx-slide.is-fixed.fx-leave .hv-header__rail {
+  transition-duration: var(--hv-header-fx-leave-dur);
 }
 
 // служебный «снять анимацию на кадр» — JS ставит при фиксации позиций,
 // чтобы в static не было обратного «возврата»
-.huder__rail.rail--no-anim {
+.hv-header__rail.rail--no-anim {
   transition: none !important;
 }
 
@@ -146,6 +146,6 @@ $topScreenOffset: 200px;
 // Spacer (компенсация места под fixed)
 // Управляется ТОЛЬКО из JS одним числом (замороженная высота)
 // ==============================
-.huder-spacer {
+.hv-header-spacer {
   height: 0; // без transition — чтобы не «прыгало»
 }

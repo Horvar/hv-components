@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Huder Fixed-after Shrink</title>
+    <title>hv-header Fixed-after Shrink</title>
   </head>
   <body>
-    <div class="huder">
-      <div class="huder__rail">
-        <div class="huder__wrapper">
-          <div class="huder__square"></div>
-          <div class="huder__square"></div>
-          <div class="huder__square"></div>
+    <div class="hv-header">
+      <div class="hv-header__rail">
+        <div class="hv-header__wrapper">
+          <div class="hv-header__square"></div>
+          <div class="hv-header__square"></div>
+          <div class="hv-header__square"></div>
         </div>
       </div>
     </div>
@@ -584,10 +584,10 @@
 
     <script type="module" src="/src/main.js"></script>
     <script type="module">
-      import { Huder } from '../scripts/_huder.js';
+      import { hvHeader } from '../scripts/_hv-header.js';
 
-      new Huder({
-        root: '.huder',
+      new hvHeader({
+        root: '.hv-header',
         mode: 'fixedAfter',
         threshold: 500,
         scrollBehavior: 'shrink',

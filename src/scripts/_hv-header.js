@@ -1,11 +1,11 @@
-// huder.js — режимы: 'static' | 'fixed' | 'fixedAfter'
+// hv-header.js — режимы: 'static' | 'fixed' | 'fixedAfter'
 // Взаимоисключающее поведение на скролл: scrollBehavior = 'none' | 'shrink' | 'reveal'
-// Slide static↔fixed делает .huder__rail; reveal/shrink — классы на .huder
+// Slide static↔fixed делает .hv-header__rail; reveal/shrink — классы на .hv-header
 
-export class Huder {
+export class hvHeader {
   constructor(opts = {}) {
     const defaults = {
-      root: '.huder',
+      root: '.hv-header',
 
       // Позиционирование
       mode: 'static', // 'static' | 'fixed' | 'fixedAfter'
@@ -25,7 +25,7 @@ export class Huder {
       revealHideDelta: 24,
       revealInitiallyHidden: false, // (для режима fixed; в fixedAfter теперь игнорируется — см. _updateState)
 
-      // FX static↔fixed (анимирует .huder__rail)
+      // FX static↔fixed (анимирует .hv-header__rail)
       fixFx: 'slide', // 'slide' | 'none'
       fixFxEnterDuration: 220,
       fixFxLeaveDuration: 220,
@@ -46,15 +46,15 @@ export class Huder {
     // Узлы
     this.root = typeof this.o.root === 'string' ? document.querySelector(this.o.root) : this.o.root;
     if (!this.root) {
-      console.warn('[Huder] root not found:', this.o.root);
+      console.warn('[Header] root not found:', this.o.root);
       return;
     }
 
     // Внутренняя обёртка (rail) — если нет, создадим и перенесём детей внутрь
-    this.rail = this.root.querySelector(':scope > .huder__rail');
+    this.rail = this.root.querySelector(':scope > .hv-header__rail');
     if (!this.rail) {
       this.rail = document.createElement('div');
-      this.rail.className = 'huder__rail';
+      this.rail.className = 'hv-header__rail';
       while (this.root.firstChild) this.rail.appendChild(this.root.firstChild);
       this.root.appendChild(this.rail);
     }
@@ -67,7 +67,7 @@ export class Huder {
     this._spacer = null;
     if (this.compensate === 'spacer') {
       this._spacer = document.createElement('div');
-      this._spacer.className = 'huder-spacer';
+      this._spacer.className = 'hv-header-spacer';
       this._spacer.style.height = '0px';
       this.root.insertAdjacentElement('afterend', this._spacer);
     }
@@ -116,7 +116,7 @@ export class Huder {
     window.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onResize, { passive: true });
 
-    if (this.o.debug) console.log('[Huder] init', this.o);
+    if (this.o.debug) console.log('[Header] init', this.o);
   }
 
   // ---------- Публичное API ----------
@@ -176,10 +176,10 @@ export class Huder {
       'is-compact',
       'is-hidden',
       'is-top',
-      'huder--fx-slide',
+      'hv-header--fx-slide',
       'fx-enter',
       'fx-leave',
-      'huder--no-anim'
+      'hv-header--no-anim'
     );
     this.rail.classList.remove('rail--no-anim');
     if (this.compensate === 'body' && this.contentContainer) this.contentContainer.style.paddingTop = '';
@@ -187,10 +187,10 @@ export class Huder {
       this._spacer.remove();
       this._spacer = null;
     }
-    document.documentElement.style.removeProperty('--huder-top-offset');
-    this.root.style.removeProperty('--huder-fx-enter-dur');
-    this.root.style.removeProperty('--huder-fx-leAVE-dur');
-    this.root.style.removeProperty('--huder-fx-easing');
+    document.documentElement.style.removeProperty('--hv-header-top-offset');
+    this.root.style.removeProperty('--hv-header-fx-enter-dur');
+    this.root.style.removeProperty('--hv-header-fx-leAVE-dur');
+    this.root.style.removeProperty('--hv-header-fx-easing');
     this._compLocked = false;
     this._compHeight = 0;
     this._fxBusy = false;
@@ -198,11 +198,11 @@ export class Huder {
 
   // ---------- Внутрянка ----------
   _initFxCssHooks() {
-    this.root.classList.remove('huder--fx-slide');
-    if (this.o.fixFx === 'slide') this.root.classList.add('huder--fx-slide');
-    this.root.style.setProperty('--huder-fx-enter-dur', `${this.o.fixFxEnterDuration}ms`);
-    this.root.style.setProperty('--huder-fx-leave-dur', `${this.o.fixFxLeaveDuration}ms`);
-    this.root.style.setProperty('--huder-fx-easing', this.o.fixFxEasing);
+    this.root.classList.remove('hv-header--fx-slide');
+    if (this.o.fixFx === 'slide') this.root.classList.add('hv-header--fx-slide');
+    this.root.style.setProperty('--hv-header-fx-enter-dur', `${this.o.fixFxEnterDuration}ms`);
+    this.root.style.setProperty('--hv-header-fx-leave-dur', `${this.o.fixFxLeaveDuration}ms`);
+    this.root.style.setProperty('--hv-header-fx-easing', this.o.fixFxEasing);
   }
 
   _observe() {
@@ -253,14 +253,14 @@ export class Huder {
   _recalcTopOffset() {
     const offset = this.sentinel ? Math.max(0, Math.round(this.sentinel.getBoundingClientRect().height)) : 0;
     this.topOffset = offset;
-    document.documentElement.style.setProperty('--huder-top-offset', `${offset}px`);
-    if (this.o.debug) console.log('[Huder] topOffset =', offset);
+    document.documentElement.style.setProperty('--hv-header-top-offset', `${offset}px`);
+    if (this.o.debug) console.log('[Header] topOffset =', offset);
   }
 
   _recalcHeaderHeight() {
     const h = Math.max(0, Math.round(this.root.getBoundingClientRect().height));
     this.headerHeight = h;
-    this.root.style.setProperty('--huder-height', `${h}px`);
+    this.root.style.setProperty('--hv-header-height', `${h}px`);
     if (this.compensate === 'body' && this.root.classList.contains('is-fixed') && !this._compLocked) {
       this._applyCompensation(h);
     }
@@ -268,7 +268,7 @@ export class Huder {
 
   _recalcThreshold() {
     this.thresholdPx = this._resolveThresholdPx(this.o.threshold);
-    if (this.o.debug) console.log('[Huder] thresholdPx =', this.thresholdPx);
+    if (this.o.debug) console.log('[Header] thresholdPx =', this.thresholdPx);
   }
 
   _resolveEl(input) {
@@ -329,7 +329,7 @@ export class Huder {
   // Мгновенно сбросить всё к "обычному" статическому состоянию (без анимаций)
   _instantResetToStatic() {
     // Глушим переходы на кадр и любые FX
-    this.root.classList.add('huder--no-anim');
+    this.root.classList.add('hv-header--no-anim');
     this.rail.classList.add('rail--no-anim');
 
     // Снимаем все классы состояния/FX
@@ -346,7 +346,7 @@ export class Huder {
     // Сброс занять сразу (reflow), затем вернуть возможность анимаций
 
     this.root.offsetHeight;
-    this.root.classList.remove('huder--no-anim');
+    this.root.classList.remove('hv-header--no-anim');
     this.rail.classList.remove('rail--no-anim');
 
     // Разрешаем апдейты
@@ -516,7 +516,7 @@ export class Huder {
 
     // 2) если входим скрытыми — на 1 кадр глушим анимации root,
     //    чтобы при добавлении is-fixed не было "вспышки"
-    if (startHidden) this.root.classList.add('huder--no-anim');
+    if (startHidden) this.root.classList.add('hv-header--no-anim');
 
     // 3) стартовые классы
     this._setCompact(!!startCompact);
@@ -530,7 +530,7 @@ export class Huder {
       // force reflow
 
       this.root.offsetHeight;
-      this.root.classList.remove('huder--no-anim');
+      this.root.classList.remove('hv-header--no-anim');
     }
 
     // 6) если стартуем скрыто — входной FX не нужен
@@ -561,12 +561,12 @@ export class Huder {
     // Если reveal-режим и сейчас скрыт — на миг показать БЕЗ анимации root,
     // чтобы не суммировались transform'ы root и rail при fx-leave.
     if (this.o.scrollBehavior === 'reveal' && this._isHidden) {
-      this.root.classList.add('huder--no-anim');
+      this.root.classList.add('hv-header--no-anim');
       this._setHidden(false);
       // force reflow
 
       this.root.offsetHeight;
-      this.root.classList.remove('huder--no-anim');
+      this.root.classList.remove('hv-header--no-anim');
     }
 
     if (!withFx || this.o.fixFx === 'none') {
