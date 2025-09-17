@@ -1,2 +1,7 @@
 @use 'styles/reset' as *;
 @use 'styles/huder' as *;
+@use 'styles/modal' as *;
+
+button {
+  display: flex;
+}

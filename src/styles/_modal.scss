@@ -1,0 +1,171 @@
+/* Общая база */
+.modal {
+  display: none;
+}
+.modal.is-active {
+  display: block;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  z-index: 999;
+}
+.modal-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Центр */
+.modal--generic .modal__panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(90vw, 720px);
+  max-height: 88vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+}
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid #eee;
+}
+.modal__title {
+  margin: 0;
+  font-size: 18px;
+}
+.modal__body {
+  padding: 18px;
+}
+.modal__close {
+  border: 0;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Дропдаун (координаты ставит JS) */
+.modal--dropdown .modal__panel {
+  position: fixed;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  max-height: 80vh;
+  overflow: auto;
+  z-index: 1000;
+}
+
+/* Поповер со стрелочкой и флипом */
+.popover {
+  position: relative;
+  padding: 10px;
+}
+.popover__arrow {
+  --s: 10px;
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  left: 16px;
+  top: -5px;
+  transform: rotate(45deg);
+  background: #fff;
+  box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.06);
+}
+.modal--drop-up .popover__arrow {
+  /* когда выпал вверх — стрелка снизу */
+  top: auto;
+  bottom: -5px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.06);
+}
+.popover__section {
+  padding: 6px 4px;
+  display: grid;
+  gap: 6px;
+}
+.popover__actions {
+  padding-top: 8px;
+  text-align: right;
+}
+
+/* Меню (панель под хедером) */
+.modal--menu .modal__panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--modal-menu-top, var(--huder-top-offset, 0px));
+  max-height: calc(100dvh - var(--modal-menu-top, var(--huder-top-offset, 0px)));
+  overflow: auto;
+  background: #fff;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+.modal--menu.is-active .modal__panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Верстка навигации в меню (пример) */
+.main-nav {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+.main-nav__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.main-nav__title {
+  margin: 0;
+  font-size: 18px;
+}
+.main-nav__close {
+  border: 0;
+  background: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+.main-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 12px;
+}
+.main-nav__list > li {
+  padding: 4px 0;
+}
+.main-nav__list a {
+  color: #222;
+  text-decoration: none;
+  display: block;
+  padding: 10px 8px;
+  border-radius: 8px;
+}
+.main-nav__list a:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Пример кастомизации ширины меню: ограничить и центрировать
+.modal--menu .modal__panel { max-width: 1200px; margin: 0 auto; } */
