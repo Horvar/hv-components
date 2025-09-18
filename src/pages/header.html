@@ -245,6 +245,7 @@
       </div>
 
       <div class="hv-play__btns">
+        <button type="button" data-action="downloadReadme" title="Скачать актуальный README.md">README</button>
         <button type="button" data-action="downloadBase" title="Скачать базовые файлы: _hv-header.js и _hv-header.scss">
           Download
         </button>
@@ -263,8 +264,9 @@
       const resetBtn = form.querySelector('[data-action="reset"]');
       const downloadBtn = form.querySelector('[data-action="downloadBase"]');
       const copyInitBtn = form.querySelector('[data-action="copyInit"]');
+      const readmeBtn = form.querySelector('[data-action="downloadReadme"]');
 
-      // Шорткаты на элементы
+      // Шорткаты
       const $ = (name) => form.elements[name];
       const els = {
         mode: $('mode'),
@@ -281,7 +283,7 @@
         debug: $('debug'),
       };
 
-      // ===== helpers =====
+      // -------- helpers --------
       function setDisabled(el, on, why = '') {
         el.disabled = !!on;
         const label = el.closest('label') || el.parentElement;
@@ -294,6 +296,7 @@
       function enforceInterlocks() {
         const mode = els.mode.value;
         const beh = els.scrollBehavior.value;
+
         const inStatic = mode === 'static';
         const inFixed = mode === 'fixed';
         const inFixedAfter = mode === 'fixedAfter';
@@ -369,7 +372,7 @@
         }, 900);
       }
 
-      // ===== download / copy =====
+      // -------- download / copy --------
       function downloadBase() {
         const files = [
           ['/components/hv-header/_hv-header.js', '_hv-header.js'],
@@ -377,7 +380,7 @@
         ];
         for (const [url, name] of files) {
           const a = document.createElement('a');
-          a.href = url; // статический URL из /public — отдаётся «как есть»
+          a.href = url; // статический URL из /public
           a.download = name;
           a.rel = 'noopener';
           a.style.display = 'none';
@@ -432,18 +435,46 @@ ${lines.join('\n')}
         }
       }
 
-      // ===== fallbacks (на случай, если fetch не нашёл пути) =====
-      const DEFAULT_SCSS_FALLBACK = `/* … ваш SCSS fallback из демо … */`;
-      const DEFAULT_JS_FALLBACK = `/* Fallback of _hv-header.js */\nexport ${hvHeader.toString()};`;
+      async function downloadReadme() {
+        const filename = 'hv-header-README.md';
+        const candidates = [
+          './hv-header-README.md',
+          '../hv-header-README.md',
+          '../docs/hv-header-README.md',
+          '/components/hv-header/hv-header-README.md',
+        ];
 
-      // ===== playground state =====
+        let text = null;
+        for (const url of candidates) {
+          try {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (res.ok) {
+              text = await res.text();
+              break;
+            }
+          } catch {}
+        }
+
+        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(a.href);
+        a.remove();
+
+        blink(readmeBtn, '✓ Saved');
+      }
+
+      // -------- playground state --------
       let header = null;
 
       function recreate() {
         if (header) {
           try {
             header.destroy();
-          } catch (e) {}
+          } catch {}
           header = null;
         }
         header = new hvHeader(readForm());
@@ -471,10 +502,9 @@ ${lines.join('\n')}
         enforceInterlocks();
       }
 
-      // старт
+      // ---- start ----
       recreate();
 
-      // live-апдейт на изменения формы
       form.addEventListener('change', (e) => {
         applyLive();
         if (['mode', 'scrollBehavior', 'fixFx', 'fixFxOnInit'].includes(e.target.name)) enforceInterlocks();
@@ -484,8 +514,9 @@ ${lines.join('\n')}
           ['threshold', 'downDelta', 'upDelta', 'fixFxEnterDuration', 'fixFxLeaveDuration', 'fixFxEasing'].includes(
             e.target.name
           )
-        )
+        ) {
           applyLive();
+        }
         if (['mode', 'scrollBehavior', 'fixFx', 'fixFxOnInit'].includes(e.target.name)) enforceInterlocks();
       });
 
@@ -496,6 +527,7 @@ ${lines.join('\n')}
       });
       downloadBtn.addEventListener('click', downloadBase);
       copyInitBtn.addEventListener('click', copyInit);
+      readmeBtn.addEventListener('click', downloadReadme);
     </script>
   </body>
 </html>
