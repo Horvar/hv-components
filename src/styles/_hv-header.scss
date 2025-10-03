@@ -45,7 +45,7 @@ $topScreenOffset: 200px;
     position: fixed;
     top: var(--hv-header-top-offset, 0px);
     left: 0;
-    z-index: 100;
+    z-index: 1000;
 
     transition:
       transform var(--hv-header-tr-move) var(--hv-header-ease),

@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "husky",
-    "lint": "eslint . --fix",
+    "lint": "eslint . --fix --format=stylish",
     "format": "prettier --write ."
   },
   "devDependencies": {

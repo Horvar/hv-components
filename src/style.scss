@@ -1,6 +1,15 @@
 @use 'styles/reset' as *;
 @use 'styles/hv-header' as *;
-//@use 'src/styles/modal' as *;
+@use 'styles/hv-modal' as *;
+@use 'styles/hv-modal-header-compatibility' as *;
+
+:root {
+  --hv-header-top-offset: 200px; // JS может перезаписать при наличии .screen-top
+}
+
+body {
+  font-family: sans-serif;
+}
 
 button {
   display: flex;

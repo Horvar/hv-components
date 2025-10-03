@@ -71,6 +71,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         header: resolve(__dirname, 'src/pages/header.html'),
+        modal: resolve(__dirname, 'src/pages/modal.html'),
       },
       output: {
         entryFileNames: '[name].js',
