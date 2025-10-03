@@ -1,0 +1,161 @@
+/* Общая база */
+html {
+  scrollbar-gutter: stable;
+}
+
+.modal {
+  display: none;
+  position: absolute;
+}
+.modal.is-active {
+  display: block;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  z-index: 999;
+}
+.modal-overlay.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Центр */
+.modal--generic .modal__panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(90vw, 720px);
+  max-height: 88vh;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #000;
+  z-index: 1000;
+}
+
+/* Дропдаун (координаты ставит JS) */
+.modal--dropdown .modal__panel {
+  position: fixed;
+  z-index: 1000;
+
+  background: #fff;
+  border: 1px solid #000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 8px;
+  box-sizing: border-box;
+
+  width: 200px;
+  max-height: 180px;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #999;
+    border: 1px solid #f0f0f0;
+  }
+}
+
+/* Поповер со стрелочкой и флипом */
+.popover {
+  position: relative;
+  padding: 10px;
+}
+.popover__arrow {
+  --s: 10px;
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  left: 16px;
+  top: -5px;
+  transform: rotate(45deg);
+  background: #fff;
+  box-shadow: -1px -1px 1px rgba(0, 0, 0, 0.06);
+}
+.modal--drop-up .popover__arrow {
+  /* когда выпал вверх — стрелка снизу */
+  top: auto;
+  bottom: -5px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.06);
+}
+.popover__section {
+  padding: 6px 4px;
+  display: grid;
+  gap: 6px;
+}
+.popover__actions {
+  padding-top: 8px;
+  text-align: right;
+}
+
+/* Меню (панель под хедером) */
+.modal--menu .modal__panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+
+  max-height: 500px;
+
+  background: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+
+  opacity: 0;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #999;
+    border: 1px solid #f0f0f0;
+  }
+}
+.modal--menu.is-active .modal__panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.main-menu {
+}
+
+.main-menu__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+/* Пример кастомизации ширины меню: ограничить и центрировать
+.modal--menu .modal__panel { max-width: 1200px; margin: 0 auto; } */

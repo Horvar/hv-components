@@ -64,6 +64,9 @@ export default defineConfig({
       targets: [
         { src: 'src/scripts/_hv-header.js', destDir: 'components/hv-header', rename: '_hv-header.js' },
         { src: 'src/styles/_hv-header.scss', destDir: 'components/hv-header', rename: '_hv-header.scss' },
+        { src: 'src/scripts/_hv-modal.js', destDir: 'components/hv-modal', rename: '_hv-modal.js' },
+        { src: 'src/styles/_hv-modal.scss', destDir: 'components/hv-modal', rename: '_hv-modal.scss' },
+        { src: 'src/scripts/_hv-accordion.js', destDir: 'components/hv-accordion', rename: '_hv-accordion.js' },
       ],
     }),
   ],
@@ -72,6 +75,7 @@ export default defineConfig({
       input: {
         header: resolve(__dirname, 'src/pages/header.html'),
         modal: resolve(__dirname, 'src/pages/modal.html'),
+        accordion: resolve(__dirname, 'src/pages/accordion.html'),
       },
       output: {
         entryFileNames: '[name].js',

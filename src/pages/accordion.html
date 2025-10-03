@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accordion</title>
+  </head>
+  <body>
+    <header class="hv-header">
+      <div
+        class="hv-header__content"
+        style="display: flex; align-items: center; padding: 0 32px; box-sizing: border-box; gap: 32px"
+      ></div>
+    </header>
+
+    <main>
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- демо-аккордеон: всегда использует текущий пресет "__accPlay" -->
+      <div
+        data-accordion-settings="__accPlay"
+        style="width: 80%; margin: 0 auto; background: #fff; padding: 0 32px; box-sizing: border-box"
+      >
+        <div data-accordion-item class="is-unfolded" style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 1</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              Таким образом, внедрение современных методик выявляет срочную потребность системы массового участия.
+              Приятно, граждане, наблюдать, как активно развивающиеся страны третьего мира являются только методом
+              политического участия и функционально разнесены на независимые элементы. В целом, конечно, консультация с
+              широким активом представляет собой интересный эксперимент проверки переосмысления внешнеэкономических
+              политик.
+            </p>
+          </div>
+        </div>
+        <div data-accordion-item style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 2</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              А также явные признаки победы институционализации указаны как претенденты на роль ключевых факторов.
+              Повседневная практика показывает, что сплочённость команды профессионалов играет определяющее значение для
+              соответствующих условий активизации.
+            </p>
+          </div>
+        </div>
+        <div data-accordion-item style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 3</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              Каждый из нас понимает очевидную вещь: перспективное планирование требует от нас анализа благоприятных
+              перспектив. С другой стороны, семантический разбор внешних противодействий не оставляет шанса для
+              инновационных методов управления процессами. Также как начало повседневной работы по формированию позиции
+              является качественно новой ступенью экспериментов, поражающих по своей масштабности и грандиозности.
+              Предварительные выводы неутешительны: внедрение современных методик предполагает независимые способы
+              реализации вывода текущих активов.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <!-- ================= hv-accordion playground ================ -->
+    <style>
+      .hv-acc-play {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 340px;
+        max-height: 80vh;
+        overflow: auto;
+        padding: 16px 8px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #ddd;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-radius: 12px;
+        font:
+          14px/1.4 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .hv-acc-play::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+      .hva__box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 8px;
+        border-radius: 16px;
+        background: #f0f0f0;
+      }
+      .hva__title {
+        font-weight: 700;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+      .hva__subtitle {
+        color: #999;
+      }
+      .hva__row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .hva__row--full {
+        grid-template-columns: 1fr;
+      }
+      .hv-acc-play label {
+        font-size: 12px;
+        color: #333;
+      }
+      .hv-acc-play input[type='number'],
+      .hv-acc-play input[type='text'],
+      .hv-acc-play select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      .hv-acc-play input[type='checkbox'] {
+        transform: translateY(1px);
+        margin-right: 6px;
+      }
+      .hv-acc-play button {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+        background: #f5f5f5;
+        cursor: pointer;
+      }
+      .hva__btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .hva__btns .is-primary {
+        background: #111;
+        color: #fff;
+        border-color: #111;
+      }
+      .hv-acc-play small {
+        color: #666;
+      }
+    </style>
+
+    <form class="hv-acc-play" id="hvAccPlay">
+      <div class="hva__title">hv-accordion playground</div>
+
+      <!-- имя пресета и общие -->
+      <div class="hva__box">
+        <div class="hva__row hva__row--full">
+          <label title="Имя пресета для Accordion.definePreset(..); демо всегда использует '__accPlay'">
+            Preset name
+            <input type="text" name="presetName" value="__accPlay" />
+          </label>
+        </div>
+        <div class="hva__row">
+          <label title="Лог-сообщения в консоль у контроллера (глобально)">
+            Debug
+            <select name="debug">
+              <option value="false" selected>false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+          <div></div>
+        </div>
+      </div>
+
+      <h4 class="hva__subtitle">Настройки пресета</h4>
+      <div class="hva__box">
+        <div class="hva__row hva__row--full">
+          <label
+            title="Если включено — в контейнере может быть открыт только один пункт; открытие нового закрывает предыдущий"
+          >
+            <input type="checkbox" name="singleOpen" checked /> singleOpen
+          </label>
+        </div>
+        <div class="hva__row">
+          <label title="Длительность анимации сворачивания/разворачивания в миллисекундах">
+            duration (ms)
+            <input type="number" name="duration" value="240" step="10" min="0" />
+          </label>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="hva__btns">
+        <button
+          type="button"
+          data-action="apply"
+          class="is-primary"
+          title="Записать/перезаписать пресет и пересканировать DOM"
+        >
+          Применить к демо
+        </button>
+        <button type="button" data-action="copy" title="Скопировать готовый вызов Accordion.definePreset(...)">
+          Скопировать
+        </button>
+      </div>
+      <small
+        >Демо всегда использует <code>data-accordion-settings="__accPlay"</code>. Меняй настройки и жми
+        «Применить».</small
+      >
+    </form>
+
+    <script type="module">
+      import { Accordion } from '../scripts/_hv-accordion.js';
+
+      // твои исходные заготовки пусть остаются на странице отдельно
+      // Accordion.definePreset('faqPreset',   { singleOpen: true,  duration: 240 });
+      // Accordion.definePreset('multiPreset', { singleOpen: false, duration: 160 });
+
+      const form = document.getElementById('hvAccPlay');
+      const $ = (n) => form.elements[n];
+      const btnApply = form.querySelector('[data-action="apply"]');
+      const btnCopy = form.querySelector('[data-action="copy"]');
+
+      const bool = (el) => el.checked === true;
+      const num = (el, def = 0) => {
+        const n = Number(el.value);
+        return Number.isFinite(n) ? n : def;
+      };
+      const str = (el) => (el.value || '').trim();
+
+      function blink(btn, text) {
+        const old = btn.textContent;
+        btn.textContent = text;
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = old;
+          btn.disabled = false;
+        }, 900);
+      }
+
+      function readPreset() {
+        const conf = {
+          singleOpen: bool($('singleOpen')),
+          duration: num($('duration'), 200),
+        };
+        return {
+          name: str($('presetName')) || '__accPlay',
+          debug: $('debug').value === 'true',
+          conf,
+        };
+      }
+
+      function buildDefineCode(p) {
+        const { name, conf } = p;
+        const order = ['singleOpen', 'duration'];
+        const ordered = {};
+        order.forEach((k) => {
+          if (conf[k] !== undefined) ordered[k] = conf[k];
+        });
+        const ser = (v) =>
+          typeof v === 'string'
+            ? `'${v.replace(/'/g, "\\'")}'`
+            : typeof v === 'boolean' || Number.isFinite(v)
+              ? String(v)
+              : v == null
+                ? 'null'
+                : JSON.stringify(v);
+        const lines = Object.entries(ordered)
+          .map(([k, v]) => `  ${k}: ${ser(v)},`)
+          .join('\n');
+        return `Accordion.definePreset('${name}', {\n${lines}\n});`;
+      }
+
+      function applyToDemo() {
+        const preset = readPreset();
+        // глобальный debug (если нужно)
+        try {
+          Accordion._ensureSingleton().o.debug = preset.debug;
+        } catch {}
+        // применяем пресет (внутри — авто-перескан контейнеров)
+        Accordion.definePreset(preset.name, preset.conf);
+        blink(btnApply, '✓ Применено');
+      }
+
+      async function copyPreset() {
+        const code = buildDefineCode(readPreset());
+        try {
+          await navigator.clipboard.writeText(code);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        }
+        blink(btnCopy, '✓ Скопировано');
+      }
+
+      btnApply.addEventListener('click', applyToDemo);
+      btnCopy.addEventListener('click', copyPreset);
+    </script>
+    <!-- ========================================================== -->
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      // presets
+      import { Accordion } from '../scripts/_hv-accordion.js';
+
+      Accordion.definePreset('faqPreset', { singleOpen: true, duration: 240 });
+      Accordion.definePreset('multiPreset', { singleOpen: false, duration: 160 });
+
+      import { hvHeader } from '../scripts/_hv-header.js';
+
+      new hvHeader({
+        root: '.hv-header',
+        mode: 'fixedAfter',
+        threshold: 500,
+        scrollBehavior: 'shrink',
+        downDelta: 24,
+        upDelta: 24,
+        fixFx: 'slide',
+        fixFxEnterDuration: 220,
+        fixFxLeaveDuration: 220,
+        fixFxEasing: 'ease',
+        overlayAtTop: true,
+        debug: false,
+      });
+    </script>
+  </body>
+</html>
