@@ -1,0 +1,35 @@
+/* Мини-вид для вкладок; оставь inline-стили в демо нетронутыми, это общий дефолт */
+
+[data-tabs-settings] {
+  /* ничего особенного, только сбросы */
+}
+
+[data-tablist] {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #000;
+}
+
+[data-tab-button] {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  font: inherit;
+  color: #222;
+}
+
+[data-tab-button].is-active {
+  background: #000;
+  color: #fff;
+}
+
+[data-tab-panel] {
+  padding: 12px 0;
+}
+
+[data-tab-panel]:not(.is-active) {
+  display: none;
+}

@@ -67,16 +67,20 @@ export default defineConfig({
         { src: 'src/scripts/_hv-form-masks.js', destDir: 'components/hv-form', rename: '_hv-form-masks.js' },
         { src: 'src/scripts/_hv-form-password.js', destDir: 'components/hv-form', rename: '_hv-form-password.js' },
         { src: 'src/styles/_hv-form.scss', destDir: 'components/hv-form', rename: '_hv-form.scss' },
+        { src: 'src/scripts/_hv-tabs.js', destDir: 'components/hv-tabs', rename: '_hv-tabs.js' },
+        { src: 'src/styles/_hv-tabs.scss', destDir: 'components/hv-tabs', rename: '_hv-tabs.scss' },
       ],
     }),
   ],
   build: {
     rollupOptions: {
       input: {
+        index: resolve(__dirname, 'index.html'),
         header: resolve(__dirname, 'src/pages/header.html'),
         modal: resolve(__dirname, 'src/pages/modal.html'),
         accordion: resolve(__dirname, 'src/pages/accordion.html'),
         form: resolve(__dirname, 'src/pages/form.html'),
+        tabs: resolve(__dirname, 'src/pages/tabs.html'),
       },
       output: {
         entryFileNames: '[name].js',
