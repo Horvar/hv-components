@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form</title>
+  </head>
+  <body>
+    <main>
+      <div class="form">
+        <!-- тут может быть <div class="form__body"> или <form class="form__body"> -->
+        <form class="form__body" action="#" method="post" novalidate>
+          <label class="form__field">
+            <span class="form__field-title">Текст</span>
+            <span class="form__field-tip">Обычный текст без ограничений</span>
+            <input class="form__control" type="text" placeholder="Плейсхолдер для текста" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field form-password" data-password-visible="false">
+            <span class="form__field-title">Пароль</span>
+            <span class="form__field-tip"
+              >Нажми на кнопку, чтобы показать/скрыть. Иконку необходимо делать через svg-спрайт. use:nth-child(1) -
+              невидим; use:nth-child(2) - видим; Сейчас используется временное закрашивание иконки, когда пароль
+              раскрыт</span
+            >
+
+            <span class="form__field-wrapper">
+              <input
+                class="form__control"
+                type="password"
+                name="password"
+                placeholder="Введите пароль"
+                autocomplete="current-password"
+              />
+
+              <button
+                class="form-password__toggle"
+                type="button"
+                aria-pressed="false"
+                aria-label="Показать пароль"
+                data-show="Показать пароль"
+                data-hide="Скрыть пароль"
+              >
+                <svg
+                  class="form-password__icon"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#i-eye"></use>
+                  <use href="#i-eye-off"></use>
+                </svg>
+              </button>
+            </span>
+
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Маски телефонов</span>
+            <span class="form__field-tip"
+              >Все три маски работают одинаково. Также, атрибут data-value будет получать все введенные значения единым
+              числом без кода страны</span
+            >
+            <input class="form__control" type="tel" placeholder="Телефон через type='tel'" />
+            <input class="form__control" type="text" data-type="tel" placeholder="Телефон через data-type='tel'" />
+            <input class="form__control" type="text" data-mask="phone" placeholder="Телефон через data-mask='phone'" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Маска с кастомным паттерном</span>
+            <span class="form__field-tip"
+              >Такие маски можно создавать прямо в разметке. Они также перенимают введенное значение в data-value</span
+            >
+            <input class="form__control" type="text" data-mask-pattern="+7 (999) 999-99-99" placeholder="Телефон" />
+            <input class="form__control" type="text" data-mask-pattern="99-999" placeholder="Код" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Почта</span>
+            <span class="form__field-tip"
+              >Для почты необязательно использовать маски и валидаторы, так как имена могут быть абсолютно
+              непредсказуемыми</span
+            >
+            <input class="form__control" type="email" placeholder="Плейсхолдер для почты" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Текстовая область</span>
+            <span class="form__field-tip">Обычная текстовая область без ограничений</span>
+            <textarea class="form__control" placeholder="Плейсхолдер для textarea"></textarea>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <!-- Поле: файлы (drag&drop + валидация) -->
+          <div
+            class="form__field form-file"
+            data-file-max="5MB"
+            data-file-accept=".png,.jpg,.pdf"
+            data-file-multiple="true"
+          >
+            <span class="form__field-title">Файлы</span>
+
+            <!-- нативный input прячем, он остаётся источником данных для формы -->
+            <input class="form-file__input" type="file" hidden accept=".png,.jpg,.pdf" multiple />
+
+            <!-- зона перетаскивания/клика -->
+            <div
+              class="form-file__drop"
+              tabindex="0"
+              role="button"
+              aria-label="Перетащите файлы или нажмите для выбора"
+            >
+              Зона для перетаскивания
+            </div>
+
+            <!-- статус и список -->
+            <div class="form-file__status">Файлы не выбраны</div>
+            <ul class="form-file__list" aria-live="polite"></ul>
+
+            <!-- действия -->
+            <div class="form-file__actions">
+              <button type="button" class="form-file__btn form-file__btn--pick">Выбрать</button>
+              <button type="button" class="form-file__btn form-file__btn--clear" disabled>Очистить</button>
+            </div>
+
+            <!-- контейнер ошибки (текст меняется скриптом) -->
+            <span class="form__error" hidden>Превышен допустимый размер файла</span>
+          </div>
+
+          <label class="form__check form-check">
+            <span class="form-check__wrapper">
+              <input class="form-check__input" type="checkbox" />
+              <svg class="form-check__icon">
+                <use href="#i-check-off"></use>
+                <use href="#i-check-on"></use>
+              </svg>
+              <span class="form-check__text"
+                >Иконку необходимо делать через svg-спрайт. use:nth-child(1) - unchecked; use:nth-child(2) - checked;
+                Сейчас используется временное закрашивание иконки, когда input:checked</span
+              >
+            </span>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <button class="form__submit" type="submit">Отправить через button</button>
+          <input class="form__submit" type="submit" value="Отправить через input" />
+          <div class="form__submit">Отправить через div</div>
+          <button class="form__submit is-disabled" type="submit" disabled>Disabled отправить через button</button>
+          <input class="form__submit is-disabled" type="submit" value="Disabled отправить через input" disabled />
+          <div class="form__submit is-disabled">Disabled отправить через div</div>
+
+          <label class="form__field is-error">
+            <span class="form__field-title">Ошибка</span>
+            <input class="form__control" type="text" placeholder="Плейсхолдер для ошибки" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__check form-check is-error">
+            <span class="form-check__wrapper">
+              <input class="form-check__input" type="checkbox" />
+              <svg class="form-check__icon">
+                <use href="#i-check-off"></use>
+                <use href="#i-check-on"></use>
+              </svg>
+              <span class="form-check__text">Согласие с обработкой персональных данных. Вывод ошибки</span>
+            </span>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+        </form>
+      </div>
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/scripts/_hv-form-file.js"></script>
+    <script type="module">
+      import { initFileFields } from '../scripts/_hv-form-file.js';
+      initFileFields();
+
+      import { initMasks } from '../scripts/_hv-form-masks.js';
+      initMasks(document, { phoneMask: '+7 (999) 999-99-99' });
+
+      import { initPasswordToggles } from '../scripts/_hv-form-password.js';
+      initPasswordToggles();
+    </script>
+
+    <!-- ================= hv-form playground ================ -->
+    <style>
+      .hv-form-play {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 340px;
+        max-height: 80vh;
+        overflow: auto;
+        padding: 16px 8px;
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #ddd;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-radius: 12px;
+        font:
+          14px/1.4 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .hv-form-play::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+      .hvf__title {
+        font-weight: 700;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+      .hvf__box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 8px;
+        border-radius: 16px;
+        background: #f0f0f0;
+      }
+      .hvf__btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .hv-form-play button {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+        background: #f5f5f5;
+        cursor: pointer;
+      }
+      .hv-form-play button.is-primary {
+        background: #111;
+        color: #fff;
+        border-color: #111;
+      }
+      .hv-form-play small {
+        color: #666;
+      }
+    </style>
+
+    <form class="hv-form-play" id="hvFormPlay">
+      <div class="hvf__title">hv-form playground</div>
+
+      <div class="hvf__box">
+        <div class="hvf__btns">
+          <button type="button" data-action="downloadReadme" title="Скачать актуальный README.md">README</button>
+          <button type="button" data-action="downloadBase" class="is-primary" title="Скачать базовые файлы (JS + SCSS)">
+            Download
+          </button>
+          <button type="button" data-action="copyMarkup" title="Скопировать базовую разметку формы">Copy markup</button>
+        </div>
+        <small
+          >Кнопки: скачать README, скачать базовые файлы (<code>_hv-form-file.js</code>, <code>_hv-form-masks.js</code>,
+          <code>_hv-form.scss</code>), скопировать разметку формы.</small
+        >
+      </div>
+    </form>
+
+    <script type="module">
+      // === hv-form playground logic ===
+      const form = document.getElementById('hvFormPlay');
+      const btnDownload = form.querySelector('[data-action="downloadBase"]');
+      const btnReadme = form.querySelector('[data-action="downloadReadme"]');
+      const btnCopy = form.querySelector('[data-action="copyMarkup"]');
+
+      function blink(btn, okText) {
+        const old = btn.textContent;
+        btn.textContent = okText;
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = old;
+          btn.disabled = false;
+        }, 900);
+      }
+
+      // ---- скачивание базовых файлов ----
+      function downloadBase() {
+        const files = [
+          ['/components/hv-form/_hv-form-file.js', '_hv-form-file.js'],
+          ['/components/hv-form/_hv-form-masks.js', '_hv-form-masks.js'],
+          ['/components/hv-form/_hv-form-password.js', '_hv-form-password.js'],
+          ['/components/hv-form/_hv-form.scss', '_hv-form.scss'],
+        ];
+        for (const [url, name] of files) {
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = name;
+          a.rel = 'noopener';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+        blink(btnDownload, '✓ Downloaded');
+      }
+
+      // ---- скачать README (ищем по нескольким вариантам путей) ----
+      async function downloadReadme() {
+        const filename = 'hv-form-README.md';
+        const candidates = [
+          './hv-form-README.md',
+          '../hv-form-README.md',
+          '../docs/hv-form-README.md',
+          '/components/hv-form/hv-form-README.md',
+        ];
+        let text = '# hv-form\n\nДокументация пока не найдена.';
+        for (const url of candidates) {
+          try {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (res.ok) {
+              text = await res.text();
+              break;
+            }
+          } catch {}
+        }
+        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(a.href);
+        a.remove();
+        blink(btnReadme, '✓ Saved');
+      }
+
+      // ---- копирование базовой разметки формы ----
+      async function copyMarkup() {
+        const markup = `<!-- wrapper -->
+<div class="form">
+  <!-- может быть <div class=\\"form__body\\"> или <form class=\\"form__body\\"> -->
+  <form class="form__body" action="#" method="post" novalidate>
+
+    <!-- Поле текст -->
+    <label class="form__field">
+      <span class="form__field-title">Текст</span>
+      <span class="form__field-tip">Обычный текст без ограничений</span>
+      <input class="form__control" type="text" placeholder="Плейсхолдер для текста" />
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Поле пароль (+ кнопка показать/скрыть) -->
+    <label class="form__field form-pass" data-pass-visible="false">
+      <span class="form__field-title">Пароль</span>
+      <span class="form__field-tip">Кнопка справа показывает/скрывает символы</span>
+      <input class="form__control form-pass__control" type="password" placeholder="Пароль" />
+      <button class="form-pass__toggle" type="button" aria-label="Показать/скрыть пароль">
+        <svg class="form-pass__icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <use class="is-off" href="#i-eye"></use>
+          <use class="is-on"  href="#i-eye-off"></use>
+        </svg>
+      </button>
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Телефоны (любая из трёх масок) -->
+    <label class="form__field">
+      <span class="form__field-title">Телефон</span>
+      <input class="form__control" type="tel" placeholder="+7 (___) ___-__-__">
+      <!-- <input class="form__control" type="text" data-type="tel" placeholder="+7 (___) ___-__-__"> -->
+      <!-- <input class="form__control" type="text" data-mask="phone" placeholder="+7 (___) ___-__-__"> -->
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Кастомная маска -->
+    <label class="form__field">
+      <span class="form__field-title">Код</span>
+      <input class="form__control" type="text" data-mask-pattern="99-999" placeholder="12-345">
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Почта -->
+    <label class="form__field">
+      <span class="form__field-title">Почта</span>
+      <input class="form__control" type="email" placeholder="name@domain.tld">
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Textarea -->
+    <label class="form__field">
+      <span class="form__field-title">Комментарий</span>
+      <textarea class="form__control" placeholder="Ваш комментарий"></textarea>
+      <span class="form__error">Текст ошибки</span>
+    </label>
+
+    <!-- Файлы (drag&drop) -->
+    <div class="form__field form-file"
+         data-file-max="5MB"
+         data-file-accept=".png,.jpg,.pdf"
+         data-file-multiple="true">
+      <span class="form__field-title">Файлы</span>
+      <input class="form-file__input" type="file" hidden accept=".png,.jpg,.pdf" multiple />
+      <div class="form-file__drop" tabindex="0" role="button" aria-label="Перетащите файлы или нажмите для выбора">
+        Зона для перетаскивания
+      </div>
+      <div class="form-file__status">Файлы не выбраны</div>
+      <ul class="form-file__list" aria-live="polite"></ul>
+      <div class="form-file__actions">
+        <button type="button" class="form-file__btn form-file__btn--pick">Выбрать</button>
+        <button type="button" class="form-file__btn form-file__btn--clear" disabled>Очистить</button>
+      </div>
+      <span class="form__error" hidden>Превышен допустимый размер файла</span>
+    </div>
+
+    <!-- Чекбокс согласия -->
+    <label class="form__check form-check">
+      <span class="form-check__wrapper">
+        <input class="form-check__input" type="checkbox">
+        <svg class="form-check__icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <use href="#i-check-off"></use>
+          <use href="#i-check-on"></use>
+        </svg>
+        <span class="form-check__text">Согласен с условиями обработки данных</span>
+      </span>
+      <span class="form__error">Необходимо согласие</span>
+    </label>
+
+    <!-- Сабмиты (любой из вариантов с одинаковым классом) -->
+    <button class="form__submit" type="submit">Отправить</button>
+    <!-- <input class="form__submit" type="submit" value="Отправить"> -->
+    <!-- <div class="form__submit" role="button">Отправить</div> -->
+
+  </form>
+</div>`;
+        try {
+          await navigator.clipboard.writeText(markup);
+          blink(btnCopy, '✓ Copied');
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = markup;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          blink(btnCopy, '✓ Copied');
+        }
+      }
+
+      // bindings
+      btnDownload.addEventListener('click', downloadBase);
+      btnReadme.addEventListener('click', downloadReadme);
+      btnCopy.addEventListener('click', copyMarkup);
+    </script>
+    <!-- ====================================================== -->
+  </body>
+</html>

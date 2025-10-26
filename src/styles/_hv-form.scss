@@ -1,0 +1,297 @@
+.form {
+  width: 80%;
+
+  background: #fff;
+
+  padding: 32px;
+  box-sizing: border-box;
+
+  margin: 0 auto;
+}
+
+.form__body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  max-width: 400px;
+}
+
+.form__field-wrapper {
+  position: relative;
+}
+
+.form__field.is-error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form__field,
+.form__check {
+  &:not(.is-error) .form__error {
+    display: none;
+  }
+}
+
+.form__field {
+  &.is-error .form__control {
+    border-color: red;
+  }
+}
+
+.form__field-title {
+  display: block;
+  font-size: 14px;
+}
+
+.form__field-tip {
+  display: block;
+  font-size: 12px;
+  line-height: 110%;
+  color: #999;
+}
+
+.form__control {
+  width: 100%;
+
+  border: 1px solid #000;
+  padding: 8px 16px;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+textarea.form__control {
+  height: 120px;
+}
+
+.form__error {
+  font-size: 14px;
+  color: red;
+}
+
+.form__submit {
+  background: #000;
+  color: #fff;
+
+  padding: 8px 16px;
+  box-sizing: border-box;
+
+  width: max-content;
+
+  cursor: pointer;
+}
+
+.form__submit {
+  &.is-disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+}
+
+.form__check {
+}
+
+.form-check {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  cursor: pointer;
+
+  &.is-error .form-check__icon {
+    border-color: red;
+  }
+}
+
+.form-check__wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.form-check__input {
+  display: none;
+
+  &:checked {
+    & ~ .form-check__icon {
+      background: #000;
+
+      use {
+        &:nth-child(1) {
+          opacity: 0;
+        }
+
+        &:nth-child(2) {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.form-check__icon {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #000;
+}
+
+.form-check__icon {
+  use {
+    &:nth-child(2) {
+      opacity: 0;
+    }
+  }
+}
+
+.form-check__text {
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 130%;
+}
+
+.form-file {
+}
+
+.form-file.is-error .form__error {
+  display: block;
+}
+
+.form-file.is-error .form-file__drop {
+  border-color: red;
+}
+
+.form-file.is-dragover .form-file__drop {
+  border-color: #000;
+  background: #f0f0f0;
+}
+
+/* дроп-зона */
+.form-file__drop {
+  height: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed #999;
+  color: #999;
+
+  cursor: pointer;
+}
+
+/* кнопки */
+.form-file__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.form-file__btn {
+  background: #000;
+  color: #fff;
+
+  padding: 8px 16px;
+  box-sizing: border-box;
+
+  width: max-content;
+
+  cursor: pointer;
+}
+
+.form-file__btn:disabled {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.form-file__status {
+  font-size: 12px;
+  line-height: 110%;
+  color: #999;
+}
+
+.form-file__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin: 8px 0;
+}
+
+.form-file__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  box-sizing: border-box;
+}
+.form-file__name {
+  font-size: 12px;
+}
+
+.form-file__size {
+  color: #666;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.form-file__remove {
+  font-size: 12px;
+  cursor: pointer;
+  color: red;
+}
+
+.form-password {
+}
+
+.form-password__toggle {
+  position: absolute;
+  right: 8px;
+  top: 2px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  background: transparent;
+  cursor: pointer;
+}
+
+.form-password__icon {
+  display: flex;
+  border: 1px solid #000;
+}
+.form-password__icon use:nth-child(2) {
+  opacity: 0;
+}
+
+.form-password[data-password-visible='true'] .form-password__icon {
+  background: #000;
+
+  use:nth-child(1) {
+    opacity: 0;
+  }
+  use:nth-child(2) {
+    opacity: 1;
+  }
+}
+
+.form__control:disabled ~ .form-password__toggle {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* ошибка — цвет как у чекбокса */
+.form__field.is-error .form-password__toggle {
+  color: red;
+}

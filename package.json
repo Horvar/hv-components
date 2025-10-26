@@ -31,5 +31,8 @@
     "*.js": [
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "inputmask": "^5.0.9"
   }
 }

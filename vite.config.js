@@ -7,10 +7,6 @@ import chokidar from 'chokidar';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/**
- * Копирует указанные файлы в public/… и смотрит за изменениями в dev.
- * targets: [{ src: 'src/scripts/_hv-header.js', destDir: 'components/hv-header', rename?: '_hv-header.js' }, ...]
- */
 function copyToPublicPlugin({ targets }) {
   // нормализуем пути
   const T = targets.map((t) => ({
@@ -67,6 +63,10 @@ export default defineConfig({
         { src: 'src/scripts/_hv-modal.js', destDir: 'components/hv-modal', rename: '_hv-modal.js' },
         { src: 'src/styles/_hv-modal.scss', destDir: 'components/hv-modal', rename: '_hv-modal.scss' },
         { src: 'src/scripts/_hv-accordion.js', destDir: 'components/hv-accordion', rename: '_hv-accordion.js' },
+        { src: 'src/scripts/_hv-form-file.js', destDir: 'components/hv-form', rename: '_hv-form-file.js' },
+        { src: 'src/scripts/_hv-form-masks.js', destDir: 'components/hv-form', rename: '_hv-form-masks.js' },
+        { src: 'src/scripts/_hv-form-password.js', destDir: 'components/hv-form', rename: '_hv-form-password.js' },
+        { src: 'src/styles/_hv-form.scss', destDir: 'components/hv-form', rename: '_hv-form.scss' },
       ],
     }),
   ],
@@ -76,6 +76,7 @@ export default defineConfig({
         header: resolve(__dirname, 'src/pages/header.html'),
         modal: resolve(__dirname, 'src/pages/modal.html'),
         accordion: resolve(__dirname, 'src/pages/accordion.html'),
+        form: resolve(__dirname, 'src/pages/form.html'),
       },
       output: {
         entryFileNames: '[name].js',
