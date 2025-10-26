@@ -1,12 +1,244 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Project</title>
+    <title>HV Components — библиотека интерфейсных модулей</title>
+    <style>
+      /* ===== базовые — в духе hv-play ===== */
+      :root {
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f5f5f5;
+        color: #222;
+        font:
+          14px/1.4 system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          Arial,
+          sans-serif;
+      }
+
+      /* шапка — светлая карточка как панель */
+      header {
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        backdrop-filter: saturate(120%) blur(4px);
+        padding: 16px 12px;
+      }
+      .header__rail {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      header h1 {
+        margin: 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+      }
+      header p {
+        margin: 0;
+        color: #666;
+      }
+
+      /* контейнер */
+      main {
+        max-width: 960px;
+        margin: 24px auto 40px;
+        padding: 0 12px;
+        display: grid;
+        gap: 16px;
+      }
+
+      /* каждая секция — карточка как .hv-play */
+      section {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* заголовок секции — как hv-play__title / __subtitle микс */
+      h2 {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        font-size: 24px;
+        color: #111;
+      }
+      section > p {
+        margin: 0;
+        color: #333;
+      }
+
+      /* список ссылок-компонентов — плитки "кнопки" из hv-play */
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+        grid-template-columns: 1fr 1fr;
+      }
+      @media (max-width: 820px) {
+        ul {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      a.component-link {
+        display: block;
+        padding: 12px 10px;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+        background: #f5f5f5;
+        color: inherit;
+        text-decoration: none;
+        transition:
+          transform 0.12s ease,
+          border-color 0.12s ease,
+          background 0.12s ease;
+      }
+      a.component-link:hover {
+        transform: translateY(-2px);
+        border-color: #111;
+        background: #fff;
+      }
+
+      /* код/примеры — как серые боксы hv-play__box */
+      pre {
+        margin: 0;
+        overflow: auto;
+        background: #f0f0f0;
+        padding: 12px 8px;
+        border-radius: 16px;
+      }
+      pre code {
+        font:
+          12px/1.4 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Consolas,
+          monospace;
+      }
+
+      /* нижний блок-ссылки — те же «кнопки» */
+      .links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .links a {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+        background: #f5f5f5;
+        text-decoration: none;
+        color: inherit;
+      }
+      .links a:hover {
+        border-color: #111;
+        background: #fff;
+      }
+
+      footer {
+        text-align: center;
+        font-size: 13px;
+        color: #666;
+        padding: 24px 0 40px;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <header>
+      <h1>HV Components</h1>
+      <p>Живая библиотека независимых интерфейсных модулей. Минимум кода — максимум ясности.</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>📘 О проекте</h2>
+        <p>
+          HV Components — это коллекция автономных UI‑модулей, написанных на чистом JS и SCSS без зависимостей. Каждый
+          компонент можно использовать отдельно, а документация и playground‑страницы позволяют быстро протестировать и
+          интегрировать его в любой проект.
+        </p>
+      </section>
+
+      <section>
+        <h2>🧩 Компоненты</h2>
+        <ul>
+          <li>
+            <a class="component-link" target="_blank" href="src/pages/header.html">Header — универсальный хедер</a>
+          </li>
+          <li>
+            <a class="component-link" target="_blank" href="src/pages/modal.html">Modal — система модальных окон</a>
+          </li>
+          <li>
+            <a class="component-link" target="_blank" href="src/pages/accordion.html"
+              >Accordion — контентные аккордеоны</a
+            >
+          </li>
+          <li>
+            <a class="component-link" target="_blank" href="src/pages/form.html"
+              >Form — все необходимые элементы форм</a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>⚙️ Структура проекта</h2>
+        <pre><code>components/
+├ hv-header/
+├ hv-modal/
+├ hv-accordion/
+└ hv-form/
+</code></pre>
+        <p>Каждый компонент включает JS, SCSS и README с документацией и примерами.</p>
+      </section>
+
+      <section>
+        <h2>🚀 Идеология</h2>
+        <p>
+          Компоненты HV строятся на принципах автономности, прозрачности и воспроизводимости. Всё можно понять, не
+          открывая исходники — логика заложена прямо в HTML. Цель проекта — сформировать минималистичный, понятный и
+          живой UI‑фреймворк без избытков.
+        </p>
+      </section>
+
+      <section>
+        <h2>🔗 Репозиторий и документация</h2>
+        <ul>
+          <li><a class="component-link" target="_blank" href="https://github.com/Horvar/hv-components">GitHub</a></li>
+          <li>
+            <a
+              class="component-link"
+              target="_blank"
+              href="https://docs.google.com/document/d/1CgkNSTp5Oq5qYl5tBZLg5y4vNsg7JyU6v-TuYCbctEo/edit?usp=sharing"
+              >Manifesto</a
+            >
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>© 2025 HV Components — интерфейсы без магии</footer>
   </body>
 </html>

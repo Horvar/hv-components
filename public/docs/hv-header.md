@@ -7,6 +7,7 @@
 ## TL;DR: подключение за минуту
 
 **HTML (минимум):**
+
 ```html
 <header class="huder">
   <div class="huder__wrapper">
@@ -19,18 +20,20 @@
 ```
 
 **JS (инициализация):**
+
 ```js
 import { Huder } from './huder.js';
 
 const h = new Huder({
-  mode: 'fixedAfter',          // 'static' | 'fixed' | 'fixedAfter'
-  threshold: 'sentinel',       // px | 'sentinel' | селектор | Element
-  scrollBehavior: 'reveal',    // 'none' | 'shrink' | 'reveal'
-  fixFx: 'slide',              // анимация входа/выхода во fixed
-  compensate: 'spacer',        // место под fixed
-  sentinel: '.screen-top',     // что считать верхом экрана (top-offset)
+  mode: 'fixedAfter', // 'static' | 'fixed' | 'fixedAfter'
+  threshold: 'sentinel', // px | 'sentinel' | селектор | Element
+  scrollBehavior: 'reveal', // 'none' | 'shrink' | 'reveal'
+  fixFx: 'slide', // анимация входа/выхода во fixed
+  compensate: 'spacer', // место под fixed
+  sentinel: '.screen-top', // что считать верхом экрана (top-offset)
 });
 ```
+
 Готово: хедер зафиксируется после порога и будет прятаться/показываться при прокрутке.
 
 ---
@@ -51,8 +54,9 @@ const h = new Huder({
 - `'fixedAfter'` — становится fixed после порога `threshold`.
 
 **Как задавать `threshold`:**
+
 - Число/строка в px (`200`, `'200px'`) — пиксели **от начала документа**.
-- `'sentinel'` *(по умолчанию)* — порог равен `top-offset` (высоте `sentinel`).
+- `'sentinel'` _(по умолчанию)_ — порог равен `top-offset` (высоте `sentinel`).
 - Селектор/`Element` — порогом считается `bottom` этого элемента в координатах страницы.
 
 **Top-offset:** берётся как высота `sentinel`. Доступен в CSS как `--huder-top-offset` (JS обновляет автоматически).
@@ -75,13 +79,14 @@ const h = new Huder({
 - `'none'` — без эффектов.
 
 Тайминги настраиваются переменными CSS (JS проставляет из опций):
+
 - `--huder-fx-enter-dur`, `--huder-fx-leave-dur`, `--huder-fx-easing`.
 
 ---
 
 ## Компенсация под fixed (`compensate`)
 
-- `'spacer'` *(по умолчанию)* — после `.huder` вставляется `.huder-spacer` с «замороженной» высотой хедера в момент входа в fixed.
+- `'spacer'` _(по умолчанию)_ — после `.huder` вставляется `.huder-spacer` с «замороженной» высотой хедера в момент входа в fixed.
 - `'body'` — ставится `padding-top` у `contentContainer` (по умолчанию `'body'`).
 - `'none'` — без компенсации (контент окажется под хедером).
 
@@ -90,6 +95,7 @@ const h = new Huder({
 ## Классы-состояния и CSS-контракт
 
 На `.huder`:
+
 - `is-fixed` — включён fixed.
 - `is-compact` — компактная высота (использует `--huder-h-compact`).
 - `is-hidden` — для `reveal`: хедер уезжает `translateY(-100%)`.
@@ -98,11 +104,13 @@ const h = new Huder({
 - `huder--no-anim` — служебный флаг, глушит переходы на один кадр.
 
 Служебные для FX:
+
 - `.huder__rail`
 - `fx-enter`, `fx-leave` (на корне)
 - `.rail--no-anim` (на рельсе — снять transition на кадр)
 
 **Полезные CSS‑переменные:**
+
 - Размеры: `--huder-h-expanded`, `--huder-h-compact`.
 - Транзишны: `--huder-tr-move`, `--huder-tr-height`, `--huder-ease`.
 - Отступ сверху: `--huder-top-offset`.
@@ -112,15 +120,16 @@ const h = new Huder({
 ## Публичное API
 
 ```js
-h.setMode(mode)              // 'static' | 'fixed' | 'fixedAfter'
-h.setThreshold(th)           // число | '123px' | 'sentinel' | селектор | Element
-h.setSentinel(elOrSelector)  // новый sentinel (null — убрать)
-h.enable()                   // подписаться на события/обсерверы заново
-h.disable()                  // отписаться от всего
-h.destroy()                  // снять классы/компенсацию, удалить spacer, почистить хуки
+h.setMode(mode); // 'static' | 'fixed' | 'fixedAfter'
+h.setThreshold(th); // число | '123px' | 'sentinel' | селектор | Element
+h.setSentinel(elOrSelector); // новый sentinel (null — убрать)
+h.enable(); // подписаться на события/обсерверы заново
+h.disable(); // отписаться от всего
+h.destroy(); // снять классы/компенсацию, удалить spacer, почистить хуки
 ```
 
 **Когда вызывать:**
+
 - Поменялась компоновка сверху → `setSentinel(...)` или `setThreshold(...)`.
 - Переключаете пресеты на лету → `setMode(...)`.
 - Уходите со страницы/вью → `disable()`, при возврате → `enable()`.
@@ -130,6 +139,7 @@ h.destroy()                  // снять классы/компенсацию, 
 ## Готовые пресеты
 
 ### 1) «Классический» fixed-хедер с reveal
+
 ```js
 new Huder({
   mode: 'fixed',
@@ -143,10 +153,11 @@ new Huder({
 ```
 
 ### 2) Фиксация после геро‑блока + мягкий slide‑въезд
+
 ```js
 new Huder({
   mode: 'fixedAfter',
-  threshold: '#hero',       // или 'sentinel'
+  threshold: '#hero', // или 'sentinel'
   scrollBehavior: 'shrink',
   fixFx: 'slide',
   fixFxEnterDuration: 220,
@@ -156,6 +167,7 @@ new Huder({
 ```
 
 ### 3) Статик без фиксации (редко нужно)
+
 ```js
 new Huder({
   mode: 'static',
@@ -223,13 +235,19 @@ new Huder({
 :root {
   --huder-h-expanded: 88px;
   --huder-h-compact: 52px;
-  --huder-tr-move: .22s;
-  --huder-tr-height: .18s;
+  --huder-tr-move: 0.22s;
+  --huder-tr-height: 0.18s;
   --huder-ease: ease;
 }
 
 /* Пример стилей для состояний */
-.huder.is-top { background: transparent; }
-.huder.is-fixed { backdrop-filter: saturate(120%) blur(8px); }
-.huder.is-compact .logo { scale: .9; }
+.huder.is-top {
+  background: transparent;
+}
+.huder.is-fixed {
+  backdrop-filter: saturate(120%) blur(8px);
+}
+.huder.is-compact .logo {
+  scale: 0.9;
+}
 ```
