@@ -3,6 +3,7 @@
 @use 'styles/hv-modal' as *;
 @use 'styles/hv-modal-header-compatibility' as *;
 @use 'styles/hv-form' as *;
+@use 'styles/hv-datepicker' as *;
 
 :root {
   --hv-header-top-offset: 200px; // JS может перезаписать при наличии .screen-top

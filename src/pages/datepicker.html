@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DatePicker</title>
+    <style>
+      /* окружение демо, НЕ стили компонента */
+      .pseudo-content {
+        display: block;
+        width: 100%;
+        height: 48vh;
+        object-fit: cover;
+        opacity: 0.1;
+      }
+      .demo-row {
+        display: flex;
+        gap: 8vw;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .demo-card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+      }
+      .demo-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .demo-field input {
+        border: 1px solid #000;
+        padding: 6px 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="demo-row">
+        <div class="demo-card">
+          <h3>Одна дата</h3>
+          <div class="demo-field">
+            <!-- красивая: ДД.ММ.ГГГГ; машинные значения пишет сам датепикер в data-dp-* -->
+            <input data-bind="outSingle" data-mask="date" type="text" value="" />
+          </div>
+          <div data-datepicker data-datepicker-settings="dpSingle" data-dp-bind-out="[data-bind='outSingle']"></div>
+        </div>
+
+        <div class="demo-card">
+          <h3>Диапазон</h3>
+          <div class="demo-field">
+            <!-- маска диапазона; датепикер кладёт start/end в data-dp-* -->
+            <input data-bind="outRange" data-mask="date-range" type="text" value="" />
+          </div>
+          <div data-datepicker data-datepicker-settings="dpRange" data-dp-bind-out="[data-bind='outRange']"></div>
+        </div>
+
+        <div class="demo-card">
+          <h3>Несколько дат</h3>
+          <div class="demo-field">
+            <!-- без жёсткой маски, но помечаем для sync raw (data-value) -->
+            <input data-bind="outMulti" data-mask="date-multi" type="text" value="" />
+          </div>
+          <div data-datepicker data-datepicker-settings="dpMulti" data-dp-bind-out="[data-bind='outMulti']"></div>
+        </div>
+      </div>
+
+      <img src="../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <!-- ваш основной бандл -->
+    <script type="module" src="/src/main.js"></script>
+
+    <!-- демо-инициализация компонента -->
+    <script type="module">
+      import { DatePicker } from '../scripts/_hv-datepicker.js';
+      import { initDateMasks } from '../scripts/_hv-datepicker-masks.js';
+
+      // пресеты объявляем ДО scan()
+      DatePicker.definePreset('dpSingle', {
+        mode: 'single',
+        weekStartsOn: 1,
+        i18n: 'auto',
+      });
+
+      DatePicker.definePreset('dpRange', {
+        mode: 'range',
+        weekStartsOn: 1,
+        i18n: 'auto',
+        // пример ограничения годов (если нет min/max):
+        yearMin: new Date().getFullYear() - 10,
+        yearMax: new Date().getFullYear() + 10,
+      });
+
+      DatePicker.definePreset('dpMulti', {
+        mode: 'multi',
+        weekStartsOn: 1,
+        i18n: 'auto',
+      });
+
+      // сначала маски (чтобы инпуты были готовы), затем сканим датепикеры
+      initDateMasks(document);
+      DatePicker._ensure().scan();
+    </script>
+  </body>
+</html>

@@ -69,6 +69,8 @@ export default defineConfig({
         { src: 'src/styles/_hv-form.scss', destDir: 'components/hv-form', rename: '_hv-form.scss' },
         { src: 'src/scripts/_hv-tabs.js', destDir: 'components/hv-tabs', rename: '_hv-tabs.js' },
         { src: 'src/styles/_hv-tabs.scss', destDir: 'components/hv-tabs', rename: '_hv-tabs.scss' },
+        { src: 'src/scripts/_hv-datepicker.js', destDir: 'components/hv-datepicker', rename: '_hv-datepicker.js' },
+        { src: 'src/styles/_hv-datepicker.scss', destDir: 'components/hv-datepicker', rename: '_hv-datepicker.scss' },
       ],
     }),
   ],
@@ -81,6 +83,8 @@ export default defineConfig({
         accordion: resolve(__dirname, 'src/pages/accordion.html'),
         form: resolve(__dirname, 'src/pages/form.html'),
         tabs: resolve(__dirname, 'src/pages/tabs.html'),
+        datepicker: resolve(__dirname, 'src/pages/datepicker.html'),
+        scrollAnimate: resolve(__dirname, 'src/pages/scroll-animate.html'),
       },
       output: {
         entryFileNames: '[name].js',

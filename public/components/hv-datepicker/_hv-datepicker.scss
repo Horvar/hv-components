@@ -1,0 +1,149 @@
+/* hv-datepicker — базовый скин компонента */
+.hv-datepicker {
+  --dp-gap: 0;
+  --dp-cell: 32px;
+  --dp-accent: #000;
+  --dp-muted: #999;
+  --dp-border: #ddd;
+  --dp-bg: #fff;
+  --dp-hover: #f5f5f5;
+  --dp-today: #0003;
+
+  display: inline-block;
+  user-select: none;
+  color: #222;
+
+  .hv-dp__head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+
+    .hv-dp__title {
+      display: contents;
+    } // контейнер без собственного отображения
+
+    .hv-dp__bar {
+      display: grid;
+      grid-template-columns: 32px 1fr 32px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hv-dp__nav {
+      appearance: none;
+      background: var(--dp-bg);
+      border: 1px solid var(--dp-accent);
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      &:focus {
+        outline: none;
+        background: var(--dp-hover);
+      }
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    .hv-dp__label {
+      font-weight: 700;
+      text-transform: capitalize; // для месяца
+      text-align: center;
+      min-height: 32px; // чтобы не прыгало
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .hv-dp__table {
+    border: 1px solid var(--dp-accent);
+    padding: 8px;
+    background: var(--dp-bg);
+  }
+
+  .hv-dp__row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--dp-gap);
+
+    & + & {
+      margin-top: var(--dp-gap);
+    }
+
+    &--head {
+      margin-bottom: 16px;
+    }
+  }
+
+  .hv-dp__cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--dp-cell);
+    height: var(--dp-cell);
+    border: 1px solid transparent;
+    background: var(--dp-bg);
+    cursor: pointer;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      background: var(--dp-hover);
+    }
+    &:hover {
+      background: var(--dp-hover);
+    }
+
+    &.is-today {
+      border-color: var(--dp-today);
+    }
+
+    &.is-out {
+      color: var(--dp-muted);
+    }
+
+    &.is-selected {
+      background: var(--dp-accent);
+      color: #fff;
+      border-color: var(--dp-accent);
+    }
+
+    &.is-in-range {
+      background: var(--dp-accent);
+      color: #fff;
+      border-color: var(--dp-accent);
+    }
+
+    &.is-disabled,
+    &[aria-disabled='true'] {
+      color: #bbb;
+      cursor: not-allowed;
+      background: #fafafa;
+    }
+  }
+
+  .hv-dp__cell--wh {
+    color: var(--dp-muted);
+    font-size: 12px;
+    text-transform: lowercase;
+    background: transparent;
+    border: 0;
+    height: auto;
+    justify-content: center;
+    cursor: default;
+
+    &:hover,
+    &:focus {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
+}
