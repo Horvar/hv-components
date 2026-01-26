@@ -98,12 +98,10 @@ export class ScrollAnimate {
       const items = root.querySelectorAll('[data-scroll-item]');
 
       if (items.length > 0) {
-        // группа элементов
-        items.forEach((item, idx) => {
-          const itemConf = { ...conf, _staggerIndex: idx };
-          this._elements.set(item, itemConf);
-          this._observeElement(item, itemConf);
-        });
+        // группа элементов — отслеживаем только родителя, сохраняем ссылки на детей
+        const groupConf = { ...conf, _isGroup: true, _items: Array.from(items) };
+        this._elements.set(root, groupConf);
+        this._observeElement(root, groupConf);
       } else {
         // одиночный элемент
         this._elements.set(root, conf);
@@ -254,13 +252,23 @@ export class ScrollAnimate {
 
         if (entry.isIntersecting) {
           // элемент вошёл в viewport
-          if (!el.classList.contains(conf.activeClass)) {
+          const isAlreadyActivated = conf._isGroup
+            ? el.__hvScrollAnimateGroupActivated__
+            : el.classList.contains(conf.activeClass);
+
+          if (!isAlreadyActivated) {
             this._activateElement(el, conf);
           }
         } else {
           // элемент вышел из viewport
-          if (!conf.once && el.classList.contains(conf.activeClass)) {
-            this._deactivateElement(el, conf);
+          if (!conf.once) {
+            const isActive = conf._isGroup
+              ? el.__hvScrollAnimateGroupActivated__
+              : el.classList.contains(conf.activeClass);
+
+            if (isActive) {
+              this._deactivateElement(el, conf);
+            }
           }
         }
       });
@@ -271,35 +279,77 @@ export class ScrollAnimate {
   }
 
   _activateElement(el, conf) {
-    const baseDelay = conf.delay || 0;
-    const staggerDelay = (conf._staggerIndex || 0) * (conf.stagger || 0);
-    const totalDelay = baseDelay + staggerDelay;
+    if (conf._isGroup) {
+      // это группа — анимируем родителя + детей по очереди
+      const baseDelay = conf.delay || 0;
 
-    if (conf.debug) {
-      console.log('[ScrollAnimate] activating:', el, 'delay:', totalDelay);
-    }
+      if (conf.debug) {
+        console.log('[ScrollAnimate] activating group:', el, 'items:', conf._items.length);
+      }
 
-    if (totalDelay > 0) {
-      setTimeout(() => {
+      // добавляем класс родителю сразу (с учётом базовой задержки)
+      if (baseDelay > 0) {
+        setTimeout(() => {
+          el.classList.add(conf.activeClass);
+        }, baseDelay);
+      } else {
+        el.classList.add(conf.activeClass);
+      }
+
+      // анимируем детей с stagger
+      conf._items.forEach((item, idx) => {
+        const staggerDelay = idx * (conf.stagger || 0);
+        const totalDelay = baseDelay + staggerDelay;
+
+        if (totalDelay > 0) {
+          setTimeout(() => {
+            item.classList.add(conf.activeClass);
+          }, totalDelay);
+        } else {
+          item.classList.add(conf.activeClass);
+        }
+      });
+
+      // отмечаем группу как активированную
+      el.__hvScrollAnimateGroupActivated__ = true;
+
+      // если once: true, отключаем observer
+      if (conf.once) {
+        const obs = this._observers.get(el);
+        if (obs) {
+          obs.unobserve(el);
+          this._observers.delete(el);
+        }
+      }
+    } else {
+      // одиночный элемент
+      const totalDelay = conf.delay || 0;
+
+      if (conf.debug) {
+        console.log('[ScrollAnimate] activating:', el, 'delay:', totalDelay);
+      }
+
+      if (totalDelay > 0) {
+        setTimeout(() => {
+          el.classList.add(conf.activeClass);
+
+          if (conf.once) {
+            const obs = this._observers.get(el);
+            if (obs) {
+              obs.unobserve(el);
+              this._observers.delete(el);
+            }
+          }
+        }, totalDelay);
+      } else {
         el.classList.add(conf.activeClass);
 
-        // если once: true, отключаем observer
         if (conf.once) {
           const obs = this._observers.get(el);
           if (obs) {
             obs.unobserve(el);
             this._observers.delete(el);
           }
-        }
-      }, totalDelay);
-    } else {
-      el.classList.add(conf.activeClass);
-
-      if (conf.once) {
-        const obs = this._observers.get(el);
-        if (obs) {
-          obs.unobserve(el);
-          this._observers.delete(el);
         }
       }
     }
@@ -309,7 +359,17 @@ export class ScrollAnimate {
     if (conf.debug) {
       console.log('[ScrollAnimate] deactivating:', el);
     }
-    el.classList.remove(conf.activeClass);
+
+    if (conf._isGroup) {
+      // удаляем класс с родителя и всех детей
+      el.classList.remove(conf.activeClass);
+      conf._items.forEach((item) => {
+        item.classList.remove(conf.activeClass);
+      });
+      el.__hvScrollAnimateGroupActivated__ = false;
+    } else {
+      el.classList.remove(conf.activeClass);
+    }
   }
 
   // ====== утилиты ======
