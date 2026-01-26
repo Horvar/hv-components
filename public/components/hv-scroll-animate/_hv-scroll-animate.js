@@ -283,7 +283,7 @@ export class ScrollAnimate {
   }
 
   _activateElement(el, conf) {
-    // СНАЧАЛА ОТМЕНЯЕМ ВСЕ ПРЕДЫДУЩИЕ ТАЙМЕРЫ
+    // СНАЧАЛА ОТМЕНЯЕМ ВСЕ ПРЕДЫДУЩИЕ ТАЙМЕРЫ И ОЧИЩАЕМ КЛАССЫ
     if (el.__hvScrollAnimateTimers__) {
       el.__hvScrollAnimateTimers__.forEach((timer) => clearTimeout(timer));
       el.__hvScrollAnimateTimers__ = [];
@@ -293,12 +293,20 @@ export class ScrollAnimate {
       el.__hvScrollAnimateTimer__ = null;
     }
 
+    // ОЧИЩАЕМ ВСЕ КЛАССЫ ПЕРЕД АКТИВАЦИЕЙ
+    if (conf._isGroup) {
+      el.classList.remove(conf.activeClass);
+      conf._items.forEach((item) => item.classList.remove(conf.activeClass));
+    } else {
+      el.classList.remove(conf.activeClass);
+    }
+
     if (conf._isGroup) {
       const baseDelay = conf.delay || 0;
       const stagger = conf.stagger || 0;
 
       if (conf.debug) {
-        console.log('[ScrollAnimate] ✅ ACTIVATING GROUP:', el);
+        console.log('[ScrollAnimate] ✅ ACTIVATING GROUP:', el, 'stagger:', stagger);
       }
 
       el.__hvScrollAnimateTimers__ = [];
@@ -313,6 +321,10 @@ export class ScrollAnimate {
       conf._items.forEach((item, idx) => {
         const staggerDelay = idx * stagger;
         const totalDelay = baseDelay + staggerDelay;
+
+        if (conf.debug) {
+          console.log('[ScrollAnimate] Item', idx, 'delay:', totalDelay);
+        }
 
         const timer = setTimeout(() => item.classList.add(conf.activeClass), Math.max(1, totalDelay));
         el.__hvScrollAnimateTimers__.push(timer);
