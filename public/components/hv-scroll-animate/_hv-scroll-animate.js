@@ -1,22 +1,19 @@
+// src/scripts/_hv-scroll-animate.js
 export class ScrollAnimate {
-  // -------- глобальные пресеты --------
   static _globalPresets = new Map();
   static definePreset(name, conf = {}) {
     if (!name) return;
     this._globalPresets.set(String(name), { ...conf });
-    // гарантируем авто-инстанс и перескан после каждого definePreset
     ScrollAnimate._ensureSingleton();
     ScrollAnimate._inst._scan(true);
   }
 
-  // ====== авто-инстанс ======
   static _inst = null;
   static _ensureSingleton() {
     if (!ScrollAnimate._inst) ScrollAnimate._inst = new ScrollAnimate({ _auto: true });
     return ScrollAnimate._inst;
   }
 
-  // ====== конструктор ======
   constructor(opts = {}) {
     const defaults = {
       once: true,
@@ -25,32 +22,22 @@ export class ScrollAnimate {
       activeClass: 'is-animated',
       delay: 0,
       stagger: 0,
-      direction: 'both', // 'up' | 'down' | 'both'
+      direction: 'both',
       breakpoints: null,
       debug: false,
       _auto: false,
     };
     this.o = { ...defaults, ...opts };
 
-    // кэш элементов
-    this._elements = new Map(); // element -> config
-    this._observers = new Map(); // element -> IntersectionObserver
-
-    // текущий breakpoint
+    this._elements = new Map();
+    this._observers = new Map();
     this._currentBreakpoint = null;
-    this._breakpointOrder = ['mobile', 'tablet', 'desktop'];
 
-    // для отслеживания направления скролла
-    this._lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
-
-    // сканируем DOM
     this._scan();
 
-    // отслеживаем изменение размера окна (для breakpoints)
     this._onResize = this._debounce(() => this._handleResize(), 150);
     window.addEventListener('resize', this._onResize);
 
-    // лёгкий observer на добавление новых элементов
     this._mo = new MutationObserver((ml) => {
       let need = false;
       for (const m of ml) {
@@ -66,26 +53,24 @@ export class ScrollAnimate {
     try {
       this._mo.observe(document.documentElement, { childList: true, subtree: true });
     } catch {
-      /* ignore */
+      // Игнорируем ошибки observe
     }
 
     if (this.o.debug) console.log('[ScrollAnimate] ready');
   }
 
-  // ====== публично ======
   destroy() {
     window.removeEventListener('resize', this._onResize);
     try {
       this._mo?.disconnect();
     } catch {
-      /* ignore */
+      // Игнорируем ошибки disconnect
     }
     this._observers.forEach((obs) => obs.disconnect());
     this._observers.clear();
     this._elements.clear();
   }
 
-  // ====== сканирование и инициализация ======
   _scan(force = false) {
     const nodes = document.querySelectorAll('[data-scroll-animate]');
     nodes.forEach((root) => {
@@ -93,17 +78,13 @@ export class ScrollAnimate {
       root.__hvScrollAnimateReady__ = true;
 
       const conf = this._readSettings(root);
-
-      // определяем, это контейнер с группой или одиночный элемент
       const items = root.querySelectorAll('[data-scroll-item]');
 
       if (items.length > 0) {
-        // группа элементов — отслеживаем только родителя, сохраняем ссылки на детей
         const groupConf = { ...conf, _isGroup: true, _items: Array.from(items) };
         this._elements.set(root, groupConf);
         this._observeElement(root, groupConf);
       } else {
-        // одиночный элемент
         this._elements.set(root, conf);
         this._observeElement(root, conf);
       }
@@ -153,7 +134,6 @@ export class ScrollAnimate {
     }
     if (buf.trim()) parts.push(buf.trim());
 
-    // собираем конфиг: глобальные дефолты → пресеты → JSON
     const base = {
       once: this.o.once,
       threshold: this.o.threshold,
@@ -173,7 +153,7 @@ export class ScrollAnimate {
         try {
           conf = { ...conf, ...JSON.parse(token) };
         } catch (e) {
-          console.warn('[ScrollAnimate] bad JSON in data-scroll-animate:', token, e);
+          console.warn('[ScrollAnimate] bad JSON:', token, e);
         }
       } else {
         const p = ScrollAnimate._globalPresets.get(token);
@@ -185,7 +165,6 @@ export class ScrollAnimate {
       }
     }
 
-    // применяем breakpoint, если есть
     const bpConf = this._getBreakpointConfig(conf.breakpoints);
     if (bpConf) {
       conf = { ...conf, ...bpConf };
@@ -194,16 +173,12 @@ export class ScrollAnimate {
     return conf;
   }
 
-  // ====== breakpoints ======
   _getBreakpointConfig(breakpoints) {
     if (!breakpoints) return null;
-
     const width = window.innerWidth;
-    let bp = 'desktop'; // default
-
+    let bp = 'desktop';
     if (width < 768) bp = 'mobile';
     else if (width < 1024) bp = 'tablet';
-
     this._currentBreakpoint = bp;
     return breakpoints[bp] || null;
   }
@@ -212,63 +187,71 @@ export class ScrollAnimate {
     const oldBp = this._currentBreakpoint;
     const width = window.innerWidth;
     let newBp = 'desktop';
-
     if (width < 768) newBp = 'mobile';
     else if (width < 1024) newBp = 'tablet';
 
     if (oldBp !== newBp) {
-      // breakpoint изменился - пересканируем все элементы
       this._observers.forEach((obs) => obs.disconnect());
       this._observers.clear();
       this._elements.clear();
-
-      // сбрасываем флаги готовности
       document.querySelectorAll('[data-scroll-animate]').forEach((el) => {
         el.__hvScrollAnimateReady__ = false;
       });
-
       this._scan(true);
       if (this.o.debug) console.log('[ScrollAnimate] breakpoint changed:', oldBp, '->', newBp);
     }
   }
 
-  // ====== IntersectionObserver ======
   _observeElement(el, conf) {
     const options = {
-      threshold: conf.threshold,
+      threshold: [0, conf.threshold],
       rootMargin: conf.rootMargin,
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        // проверяем направление скролла
-        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-        const scrollDirection = currentScrollY > this._lastScrollY ? 'down' : 'up';
-        this._lastScrollY = currentScrollY;
+        const rect = entry.boundingClientRect;
+        const vh = window.innerHeight;
 
-        if (conf.direction !== 'both' && conf.direction !== scrollDirection) {
+        // Зона триггера для АКТИВАЦИИ
+        const triggerZoneTop = rect.top + rect.height * conf.threshold;
+        const isViewportBelowTrigger = vh > triggerZoneTop;
+
+        // Границы элемента для ДЕАКТИВАЦИИ
+        const isViewportAboveElement = vh < rect.top;
+
+        if (conf.debug) {
+          console.log('[ScrollAnimate]', {
+            el,
+            isViewportBelowTrigger,
+            isViewportAboveElement,
+            triggerZoneTop,
+            'rect.top': rect.top,
+            'rect.bottom': rect.bottom,
+            viewportBottom: vh,
+          });
+        }
+
+        // ЕСЛИ VIEWPORT ВЫШЕ ЭЛЕМЕНТА - УДАЛИТЬ ВСЕ НАХУЙ
+        if (isViewportAboveElement) {
+          if (conf.debug) {
+            console.log('[ScrollAnimate] ❌ VIEWPORT ABOVE - CLEARING EVERYTHING');
+          }
+          this._clearElement(el, conf);
           return;
         }
 
-        if (entry.isIntersecting) {
-          // элемент вошёл в viewport
+        // ЕСЛИ VIEWPORT НИЖЕ ТРИГГЕРА - АКТИВИРОВАТЬ
+        if (isViewportBelowTrigger) {
           const isAlreadyActivated = conf._isGroup
-            ? el.__hvScrollAnimateGroupActivated__
+            ? el.__hvScrollAnimateGroupActivated__ || false
             : el.classList.contains(conf.activeClass);
 
           if (!isAlreadyActivated) {
-            this._activateElement(el, conf);
-          }
-        } else {
-          // элемент вышел из viewport
-          if (!conf.once) {
-            const isActive = conf._isGroup
-              ? el.__hvScrollAnimateGroupActivated__
-              : el.classList.contains(conf.activeClass);
-
-            if (isActive) {
-              this._deactivateElement(el, conf);
+            if (conf.debug) {
+              console.log('[ScrollAnimate] ✅ VIEWPORT BELOW TRIGGER - ACTIVATING');
             }
+            this._activateElement(el, conf);
           }
         }
       });
@@ -278,42 +261,65 @@ export class ScrollAnimate {
     this._observers.set(el, observer);
   }
 
-  _activateElement(el, conf) {
+  _clearElement(el, conf) {
+    // Отменить ВСЕ таймеры
+    if (el.__hvScrollAnimateTimers__) {
+      el.__hvScrollAnimateTimers__.forEach((timer) => clearTimeout(timer));
+      el.__hvScrollAnimateTimers__ = [];
+    }
+    if (el.__hvScrollAnimateTimer__) {
+      clearTimeout(el.__hvScrollAnimateTimer__);
+      el.__hvScrollAnimateTimer__ = null;
+    }
+
+    // Удалить ВСЕ классы
     if (conf._isGroup) {
-      // это группа — анимируем родителя + детей по очереди
+      el.classList.remove(conf.activeClass);
+      conf._items.forEach((item) => item.classList.remove(conf.activeClass));
+      el.__hvScrollAnimateGroupActivated__ = false;
+    } else {
+      el.classList.remove(conf.activeClass);
+    }
+  }
+
+  _activateElement(el, conf) {
+    // СНАЧАЛА ОТМЕНЯЕМ ВСЕ ПРЕДЫДУЩИЕ ТАЙМЕРЫ
+    if (el.__hvScrollAnimateTimers__) {
+      el.__hvScrollAnimateTimers__.forEach((timer) => clearTimeout(timer));
+      el.__hvScrollAnimateTimers__ = [];
+    }
+    if (el.__hvScrollAnimateTimer__) {
+      clearTimeout(el.__hvScrollAnimateTimer__);
+      el.__hvScrollAnimateTimer__ = null;
+    }
+
+    if (conf._isGroup) {
       const baseDelay = conf.delay || 0;
+      const stagger = conf.stagger || 0;
 
       if (conf.debug) {
-        console.log('[ScrollAnimate] activating group:', el, 'items:', conf._items.length);
+        console.log('[ScrollAnimate] ✅ ACTIVATING GROUP:', el);
       }
 
-      // добавляем класс родителю сразу (с учётом базовой задержки)
+      el.__hvScrollAnimateTimers__ = [];
+
       if (baseDelay > 0) {
-        setTimeout(() => {
-          el.classList.add(conf.activeClass);
-        }, baseDelay);
+        const timer = setTimeout(() => el.classList.add(conf.activeClass), baseDelay);
+        el.__hvScrollAnimateTimers__.push(timer);
       } else {
         el.classList.add(conf.activeClass);
       }
 
-      // анимируем детей с stagger
       conf._items.forEach((item, idx) => {
-        const staggerDelay = idx * (conf.stagger || 0);
+        const staggerDelay = idx * stagger;
         const totalDelay = baseDelay + staggerDelay;
 
-        if (totalDelay > 0) {
-          setTimeout(() => {
-            item.classList.add(conf.activeClass);
-          }, totalDelay);
-        } else {
-          item.classList.add(conf.activeClass);
-        }
+        const timer = setTimeout(() => item.classList.add(conf.activeClass), Math.max(1, totalDelay));
+        el.__hvScrollAnimateTimers__.push(timer);
       });
 
-      // отмечаем группу как активированную
       el.__hvScrollAnimateGroupActivated__ = true;
 
-      // если once: true, отключаем observer
       if (conf.once) {
         const obs = this._observers.get(el);
         if (obs) {
@@ -322,17 +328,15 @@ export class ScrollAnimate {
         }
       }
     } else {
-      // одиночный элемент
       const totalDelay = conf.delay || 0;
 
       if (conf.debug) {
-        console.log('[ScrollAnimate] activating:', el, 'delay:', totalDelay);
+        console.log('[ScrollAnimate] ✅ ACTIVATING:', el);
       }
 
       if (totalDelay > 0) {
-        setTimeout(() => {
+        el.__hvScrollAnimateTimer__ = setTimeout(() => {
           el.classList.add(conf.activeClass);
-
           if (conf.once) {
             const obs = this._observers.get(el);
             if (obs) {
@@ -343,7 +347,6 @@ export class ScrollAnimate {
         }, totalDelay);
       } else {
         el.classList.add(conf.activeClass);
-
         if (conf.once) {
           const obs = this._observers.get(el);
           if (obs) {
@@ -355,24 +358,6 @@ export class ScrollAnimate {
     }
   }
 
-  _deactivateElement(el, conf) {
-    if (conf.debug) {
-      console.log('[ScrollAnimate] deactivating:', el);
-    }
-
-    if (conf._isGroup) {
-      // удаляем класс с родителя и всех детей
-      el.classList.remove(conf.activeClass);
-      conf._items.forEach((item) => {
-        item.classList.remove(conf.activeClass);
-      });
-      el.__hvScrollAnimateGroupActivated__ = false;
-    } else {
-      el.classList.remove(conf.activeClass);
-    }
-  }
-
-  // ====== утилиты ======
   _debounce(fn, ms) {
     let timer;
     return function (...args) {
@@ -382,5 +367,4 @@ export class ScrollAnimate {
   }
 }
 
-// ---- авто-инициализация при импорте ----
 ScrollAnimate._ensureSingleton();
