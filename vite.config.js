@@ -71,6 +71,11 @@ export default defineConfig({
         { src: 'src/styles/_hv-tabs.scss', destDir: 'components/hv-tabs', rename: '_hv-tabs.scss' },
         { src: 'src/scripts/_hv-datepicker.js', destDir: 'components/hv-datepicker', rename: '_hv-datepicker.js' },
         { src: 'src/styles/_hv-datepicker.scss', destDir: 'components/hv-datepicker', rename: '_hv-datepicker.scss' },
+        {
+          src: 'src/scripts/_hv-scroll-animate.js',
+          destDir: 'components/hv-scroll-animate',
+          rename: '_hv-scroll-animate.js',
+        },
       ],
     }),
   ],
