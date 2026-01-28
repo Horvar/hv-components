@@ -483,7 +483,7 @@ export class ScrollAnimate {
       lineEl.className = 'sa-line';
       lineEl.setAttribute('data-scroll-item', '');
       // Запрещаем перенос внутри строки
-      lineEl.style.display = 'inline-block';
+      lineEl.style.display = 'inline-flex';
 
       const inner = document.createElement('span');
       inner.className = 'sa-line__inner';

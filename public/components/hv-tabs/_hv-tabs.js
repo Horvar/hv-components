@@ -1,18 +1,25 @@
-// _hv-tabs.js
+// src/scripts/_hv-tabs.js
 // минимальный, автономный таб-контроллер с пресетами и ресканом
 // Разметка:
 // <div data-tabs-settings="myPreset">
 //   <div data-tablist>
-//     <button data-tab-button data-tab="t1" class="is-active">Tab 1</button>
+//     <button data-tab-button data-tab="t1" class="is-selected">Tab 1</button>
 //     <button data-tab-button data-tab="t2">Tab 2</button>
 //   </div>
-//   <div data-tab-panel data-tab="t1">Panel 1</div>
-//   <div data-tab-panel data-tab="t2" hidden>Panel 2</div>
+//   <div data-tab-panel data-tab="t1" class="is-visible">Panel 1</div>
+//   <div data-tab-panel data-tab="t2">Panel 2</div>
 // </div>
 //
 // API:
 // Tabs.definePreset('name', { trigger:'click'|'hover', initial:'first'|'last' });
 // // при изменении пресета — все контейнеры с data-tabs-settings="name" аккуратно переинициализируются.
+//
+// Поведение панелей:
+// - НЕ используем hidden.
+// - Активная панель получает класс panelActiveClass (по умолчанию 'is-visible')
+// - Неактивные панели — без этого класса.
+//
+// Важно: для доступности мы оставляем aria-hidden, role, aria-selected и т.д.
 
 export class Tabs {
   // ---------- статическое ----------
@@ -63,6 +70,8 @@ export class Tabs {
     const defaults = {
       trigger: 'click', // 'click' | 'hover'
       initial: 'first', // 'first' | 'last'
+      panelActiveClass: 'is-visible',
+      buttonActiveClass: 'is-selected',
     };
     const conf = { ...defaults, ...preset };
 
@@ -125,7 +134,7 @@ export class Tabs {
     });
 
     // «активный» из разметки, иначе по initial
-    let index = items.findIndex((it) => it.btn.classList.contains('is-active'));
+    let index = items.findIndex((it) => it.btn.classList.contains(conf.buttonActiveClass));
     if (index < 0) {
       index = conf.initial === 'last' ? items.length - 1 : 0;
       index = Math.max(0, Math.min(index, items.length - 1));
@@ -134,14 +143,26 @@ export class Tabs {
     // роль/ARIA (немного базовой доступности — без фанатизма)
     const tablist = root.querySelector('[data-tablist]');
     if (tablist) tablist.setAttribute('role', 'tablist');
+
     items.forEach((it, i) => {
       const { btn, panel, id } = it;
+
       btn.setAttribute('role', 'tab');
       btn.setAttribute('aria-selected', i === index ? 'true' : 'false');
-      btn.setAttribute('aria-controls', panel ? `panel-${id}` : '');
+      btn.setAttribute('tabindex', i === index ? '0' : '-1');
+
+      // aria-controls — только если панель есть
       if (panel) {
+        const panelId = `panel-${id}`;
+        btn.setAttribute('aria-controls', panelId);
+
         panel.setAttribute('role', 'tabpanel');
-        panel.id = `panel-${id}`;
+        panel.id = panelId;
+        // связка в обратную сторону (полезно для скринридеров)
+        if (!btn.id) btn.id = `tab-${id}`;
+        panel.setAttribute('aria-labelledby', btn.id);
+      } else {
+        btn.removeAttribute('aria-controls');
       }
     });
 
@@ -153,20 +174,18 @@ export class Tabs {
       this._activate(root, i);
     };
     const onEnter = (i) => () => {
-      // hover только для устройств с hover: hover
       if (conf.trigger !== 'hover') return;
-      // если кто-то даст touchstart → будет клик; hover игнорируем
       this._activate(root, i);
     };
 
     items.forEach((it, i) => {
       const { btn } = it;
+
       const hClick = (e) => onClick(e, i);
       btn.addEventListener('click', hClick);
       unsub.push(() => btn.removeEventListener('click', hClick));
 
       if (conf.trigger === 'hover') {
-        // безопасно — только на десктопе (pointer: fine)
         const hEnter = onEnter(i);
         btn.addEventListener('mouseenter', hEnter);
         unsub.push(() => btn.removeEventListener('mouseenter', hEnter));
@@ -174,7 +193,7 @@ export class Tabs {
     });
 
     // первичная активация
-    this._applyActiveState(items, index);
+    this._applyActiveState(items, index, conf);
 
     // сохранить инстанс
     root.__hvTabs__ = {
@@ -194,7 +213,7 @@ export class Tabs {
       try {
         fn();
       } catch {
-        /* ignore: observer might be absent */
+        /* ignore */
       }
     });
     root.__hvTabs__ = null;
@@ -203,28 +222,29 @@ export class Tabs {
   _activate(root, nextIndex) {
     const inst = root.__hvTabs__;
     if (!inst) return;
-    const { items } = inst;
+    const { items, conf } = inst;
+
     const n = Math.max(0, Math.min(nextIndex, items.length - 1));
     if (n === inst.index) return;
 
-    this._applyActiveState(items, n);
+    this._applyActiveState(items, n, conf);
     inst.index = n;
     this._log('activate', items[n]?.id);
   }
 
-  _applyActiveState(items, activeIndex) {
+  _applyActiveState(items, activeIndex, conf) {
     items.forEach((it, i) => {
       const on = i === activeIndex;
 
       // кнопка
-      it.btn.classList.toggle('is-active', on);
+      it.btn.classList.toggle(conf.buttonActiveClass, on);
       it.btn.setAttribute('aria-selected', on ? 'true' : 'false');
       it.btn.setAttribute('tabindex', on ? '0' : '-1');
 
-      // панель
+      // панель (класс вместо hidden)
       if (it.panel) {
-        if (on) it.panel.removeAttribute('hidden');
-        else it.panel.setAttribute('hidden', '');
+        it.panel.classList.toggle(conf.panelActiveClass, on);
+        it.panel.setAttribute('aria-hidden', on ? 'false' : 'true');
       }
     });
   }

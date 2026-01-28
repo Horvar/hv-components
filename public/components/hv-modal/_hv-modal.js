@@ -5,12 +5,17 @@
 // Конфигурация одним атрибутом:
 //   data-modal-settings="preset1 preset2 {\"autoCloseOnLink\":true}"
 //
+// Новое: hoverOpen (true|false) — открытие по наведению мыши
+//        hoverDelay (ms) — задержка открытия
+//        hoverCloseDelay (ms) — задержка закрытия
+//
 // Поля (пресеты/JSON/частично data-*):
 //   overlay, closeOnEsc, closeOnOutside, lockScroll, focusTrap,
 //   autoCloseOnLink, gap, viewportMargin, mode('generic'|'dropdown'|'menu'),
 //   flip(true|false) — для dropdown,
 //   anchor (selector|Element) — для menu,
-//   fitRest (bool) — для menu; если true и есть anchor, панель занимает остаток экрана.
+//   fitRest (bool) — для menu; если true и есть anchor, панель занимает остаток экрана,
+//   hoverOpen, hoverDelay, hoverCloseDelay.
 //
 // Доп. поведение:
 //   • Кнопка-триггер и anchor получают класс `is-active` на время открытия.
@@ -43,6 +48,9 @@ export class Modaler {
       debug: false,
       presets: null,
       respectGutter: true, // не компенсировать полосу, если на html задан scrollbar-gutter: stable
+      hoverOpen: false, // новое: открытие по hover
+      hoverDelay: 0, // задержка открытия (мс)
+      hoverCloseDelay: 150, // задержка закрытия (мс)
     };
     this.o = { ...defaults, ...opts };
 
@@ -53,13 +61,18 @@ export class Modaler {
     }
 
     this._overlay = null;
-    this._open = null; // { id, el, panel, conf, mode, anchorEl, triggerEl, restoreEl, linkHandler, vvBound }
+    // { id, el, panel, conf, mode, anchorEl, triggerEl, restoreEl, linkHandler, vvBound,
+    //   hoverOpen, leaveHandler, enterHandler, anchorLeaveHandler, anchorEnterHandler }
+    this._open = null;
     this._modals = new Map();
+    this._hoverTimeout = null;
 
     this._onDocumentClick = this._onDocumentClick.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onResizeScroll = this._onResizeScroll.bind(this);
     this._trapHandler = this._trapHandler.bind(this);
+    this._onMouseEnter = this._onMouseEnter.bind(this);
+    this._onMouseLeave = this._onMouseLeave.bind(this);
 
     this._scan();
     this._ensureOverlay();
@@ -132,6 +145,22 @@ export class Modaler {
       panel.addEventListener('click', linkHandler);
     }
 
+    // Hover-слушатели для панели (если hoverOpen)
+    let leaveHandler = null,
+      enterHandler = null;
+    if (conf.hoverOpen && (mode === 'dropdown' || mode === 'menu')) {
+      leaveHandler = (e) => {
+        if (this._open?.id !== id) return;
+        // если ушли с панели ПРЯМО в trigger/anchor/модалку — не закрываем
+        if (this._isInOpenZone(e?.relatedTarget, this._open)) return;
+        this._scheduleHoverClose(conf.hoverCloseDelay ?? this.o.hoverCloseDelay, 'hover');
+      };
+      enterHandler = () => clearTimeout(this._hoverTimeout);
+
+      panel.addEventListener('mouseleave', leaveHandler, { passive: true });
+      panel.addEventListener('mouseenter', enterHandler, { passive: true });
+    }
+
     // Активность на триггере
     if (anchorFromBtn?.getAttribute) {
       anchorFromBtn.setAttribute('aria-expanded', 'true');
@@ -141,6 +170,21 @@ export class Modaler {
 
     // Активность на якоре меню (если есть)
     if (menuAnchorEl?.classList) menuAnchorEl.classList.add('is-active');
+
+    // ✅ НОВОЕ: если есть anchor (menu) — считаем его частью «inside» для outside-close
+    // и, в hover-режиме, держим модалку открытой при наведении на anchor.
+    let anchorLeaveHandler = null;
+    let anchorEnterHandler = null;
+    if (conf.hoverOpen && menuAnchorEl && menuAnchorEl !== anchorFromBtn) {
+      anchorLeaveHandler = (e) => {
+        if (this._open?.id !== id) return;
+        if (this._isInOpenZone(e?.relatedTarget, this._open)) return;
+        this._scheduleHoverClose(conf.hoverCloseDelay ?? this.o.hoverCloseDelay, 'hover');
+      };
+      anchorEnterHandler = () => clearTimeout(this._hoverTimeout);
+      menuAnchorEl.addEventListener('mouseleave', anchorLeaveHandler, { passive: true });
+      menuAnchorEl.addEventListener('mouseenter', anchorEnterHandler, { passive: true });
+    }
 
     // visualViewport для fitRest
     let vvBound = null;
@@ -163,6 +207,11 @@ export class Modaler {
       restoreEl,
       linkHandler,
       vvBound,
+      hoverOpen: conf.hoverOpen,
+      leaveHandler,
+      enterHandler,
+      anchorLeaveHandler,
+      anchorEnterHandler,
     };
 
     el.dispatchEvent(new CustomEvent('modal:open', { detail: { id, mode, conf } }));
@@ -170,12 +219,37 @@ export class Modaler {
   }
 
   close(reason = 'api') {
+    clearTimeout(this._hoverTimeout);
+
     if (!this._open) return;
-    const { id, el, conf, restoreEl, panel, linkHandler, triggerEl, mode, anchorEl, vvBound } = this._open;
+    const {
+      id,
+      el,
+      conf,
+      restoreEl,
+      panel,
+      linkHandler,
+      triggerEl,
+      mode,
+      anchorEl,
+      vvBound,
+      leaveHandler,
+      enterHandler,
+      anchorLeaveHandler,
+      anchorEnterHandler,
+    } = this._open;
 
     document.removeEventListener('keydown', this._onKeyDown);
     document.removeEventListener('keydown', this._trapHandler, true);
     if (linkHandler) panel.removeEventListener('click', linkHandler);
+
+    // Hover-слушатели панели
+    if (leaveHandler) panel.removeEventListener('mouseleave', leaveHandler);
+    if (enterHandler) panel.removeEventListener('mouseenter', enterHandler);
+
+    // Hover-слушатели anchor (menu)
+    if (anchorEl && anchorLeaveHandler) anchorEl.removeEventListener('mouseleave', anchorLeaveHandler);
+    if (anchorEl && anchorEnterHandler) anchorEl.removeEventListener('mouseenter', anchorEnterHandler);
 
     // снять vv слушатели
     if (vvBound && window.visualViewport) {
@@ -241,8 +315,11 @@ export class Modaler {
         autoCloseOnLink: this._maybeBool(el.dataset.modalAutoCloseOnLink),
         mode: el.dataset.modalMode,
         flip: this._maybeBool(el.dataset.modalFlip),
-        anchor: el.dataset.modalAnchor, // селектор якоря (опционально)
-        fitRest: this._maybeBool(el.dataset.modalFitRest), // можно и data-атрибутом, если надо
+        anchor: el.dataset.modalAnchor,
+        fitRest: this._maybeBool(el.dataset.modalFitRest),
+        hoverOpen: this._maybeBool(el.dataset.modalHoverOpen),
+        hoverDelay: el.dataset.modalHoverDelay ? Number(el.dataset.modalHoverDelay) : undefined,
+        hoverCloseDelay: el.dataset.modalHoverCloseDelay ? Number(el.dataset.modalHoverCloseDelay) : undefined,
       };
 
       const base = {
@@ -258,6 +335,9 @@ export class Modaler {
         mode: undefined,
         anchor: undefined,
         fitRest: undefined,
+        hoverOpen: this.o.hoverOpen,
+        hoverDelay: this.o.hoverDelay,
+        hoverCloseDelay: this.o.hoverCloseDelay,
       };
 
       const conf = this._merge(base, fromSettings, fallbackFromData);
@@ -280,6 +360,14 @@ export class Modaler {
 
       el.setAttribute('aria-hidden', 'true');
       this._modals.set(id, { id, el, panel, conf, mode });
+
+      // ✅ КРИТИЧНО: добавить hover-слушатели на КНОПКИ-триггеры
+      if (conf.hoverOpen) {
+        document.querySelectorAll(`[data-modal-button="${id}"]`).forEach((btn) => {
+          btn.addEventListener('mouseenter', this._onMouseEnter, { passive: true });
+          btn.addEventListener('mouseleave', this._onMouseLeave, { passive: true });
+        });
+      }
     });
   }
 
@@ -297,10 +385,40 @@ export class Modaler {
   }
 
   // ---------- Обработчики ----------
+  // ✅ Для hover-дропдаунов важно НЕ закрывать модалку при «переезде» курсора
+  // между trigger ↔ panel ↔ anchor. Для этого проверяем relatedTarget.
+  _isInOpenZone(target, open) {
+    if (!target || !open) return false;
+    const t = target instanceof Node ? target : null;
+    if (!t) return false;
+    if (open.el && open.el.contains(t)) return true;
+    if (open.panel && open.panel.contains(t)) return true;
+    if (open.anchorEl && open.anchorEl.contains && open.anchorEl.contains(t)) return true;
+    if (open.triggerEl && open.triggerEl.contains && open.triggerEl.contains(t)) return true;
+    return false;
+  }
+
+  _scheduleHoverClose(delay, reason = 'hover') {
+    clearTimeout(this._hoverTimeout);
+    this._hoverTimeout = setTimeout(
+      () => {
+        this.close(reason);
+      },
+      Math.max(0, Number(delay) || 0)
+    );
+  }
+
   _onDocumentClick(e) {
     const btn = e.target.closest('[data-modal-button]');
     if (btn) {
       const id = btn.getAttribute('data-modal-button');
+      const rec = this._modals.get(id);
+      if (rec?.conf.hoverOpen) {
+        // Для hover-режима клик = toggle
+        this.toggle(id, btn);
+        e.stopPropagation();
+        return;
+      }
       this.toggle(id, btn);
       return;
     }
@@ -308,13 +426,52 @@ export class Modaler {
       this.close('button');
       return;
     }
+
+    // ✅ FIX: outside-click НЕ должен закрывать, если клик по anchor (menu) или по trigger
     if (this._open && this._open.conf.closeOnOutside) {
-      const inside = e.target.closest('[data-modal-window]');
-      if (!inside) {
+      const t = e.target;
+      const insideModal = this._open.el && this._open.el.contains(t);
+      const insideAnchor = this._open.anchorEl && this._open.anchorEl.contains(t);
+      const insideTrigger = this._open.triggerEl && this._open.triggerEl.contains(t);
+
+      if (!insideModal && !insideAnchor && !insideTrigger) {
         this.close('outside');
         return;
       }
     }
+  }
+
+  _onMouseEnter(e) {
+    const btn = e.target.closest('[data-modal-button]');
+    if (!btn) return;
+
+    const id = btn.getAttribute('data-modal-button');
+    const rec = this._modals.get(id);
+    if (!rec?.conf.hoverOpen || this._open?.id === id) return;
+
+    clearTimeout(this._hoverTimeout);
+
+    const delay = rec.conf.hoverDelay ?? this.o.hoverDelay;
+    if (delay > 0) {
+      this._hoverTimeout = setTimeout(() => {
+        this.open(id, btn);
+      }, delay);
+    } else {
+      this.open(id, btn);
+    }
+  }
+
+  _onMouseLeave(e) {
+    const btn = e.target.closest('[data-modal-button]');
+    if (!btn || !this._open) return;
+
+    const id = btn.getAttribute('data-modal-button');
+    if (this._open.id !== id || !this._open.conf.hoverOpen) return;
+
+    // если ушли с trigger прямо в panel/anchor/модалку — не закрываем
+    if (this._isInOpenZone(e?.relatedTarget, this._open)) return;
+
+    this._scheduleHoverClose(this._open.conf.hoverCloseDelay ?? this.o.hoverCloseDelay, 'hover');
   }
 
   _onKeyDown(e) {
