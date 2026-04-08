@@ -1,0 +1,13 @@
+.hv-header {
+  &.is-active {
+    &:not(&.is-fixed) {
+      position: relative;
+      z-index: 1000;
+    }
+
+    .hv-header__content {
+      background: #000;
+      color: #fff;
+    }
+  }
+}

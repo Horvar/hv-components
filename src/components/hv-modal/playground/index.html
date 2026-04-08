@@ -1,0 +1,138 @@
+<!-- ======= hv-modal playground ======= -->
+<form class="hv-play hv-play--modal" id="hvModalPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-modal</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Быстрые пресеты -->
+    <div class="hv-play__section" title="Применяет пресет к '__play' и открывает демо">
+      <div class="hv-play__section-title">Быстрые пресеты</div>
+      <div class="hv-play__quick">
+        <button type="button" data-quick="dialog">dialog</button>
+        <button type="button" data-quick="dropdown-common">dropdown</button>
+        <button type="button" data-quick="dropdown-flip">dropdown-flip</button>
+        <button type="button" data-quick="menu">menu</button>
+        <button type="button" data-quick="menu-fit">menu-fit</button>
+      </div>
+    </div>
+
+    <!-- Пресет и режим -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Пресет</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="Имя пресета; демо всегда использует '__play'">
+          Имя пресета
+          <input type="text" name="presetName" value="__play" />
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Режим позиционирования модалки">
+          Режим
+          <select name="mode">
+            <option value="generic" selected>generic</option>
+            <option value="dropdown">dropdown</option>
+            <option value="menu">menu</option>
+          </select>
+        </label>
+        <label title="Логи в консоль">
+          Отладка
+          <select name="debug">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Базовые настройки -->
+    <div class="hv-play__section" id="baseBox">
+      <div class="hv-play__section-title">Поведение</div>
+      <div class="hv-play__row">
+        <label class="is-inline" title="Затемняющий оверлей позади">
+          <input type="checkbox" name="overlay" checked /> Оверлей
+        </label>
+        <label class="is-inline" title="Закрывать по Esc">
+          <input type="checkbox" name="closeOnEsc" checked /> По Esc
+        </label>
+        <label class="is-inline" title="Закрывать по клику вне">
+          <input type="checkbox" name="closeOnOutside" checked /> Вне панели
+        </label>
+        <label class="is-inline" title="Блокировать скролл body">
+          <input type="checkbox" name="lockScroll" checked /> Блок. скролл
+        </label>
+        <label class="is-inline" title="Ловушка фокуса">
+          <input type="checkbox" name="focusTrap" checked /> Ловушка фокуса
+        </label>
+        <label class="is-inline" title="Закрывать по клику на ссылку внутри">
+          <input type="checkbox" name="autoCloseOnLink" /> По ссылке
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Отступ (px) между якорём и панелью">
+          Отступ (px)
+          <input type="number" name="gap" value="8" step="1" min="0" />
+        </label>
+        <label title="Поля от краёв вьюпорта (px)">
+          Поля вьюпорта
+          <input type="number" name="viewportMargin" value="8" step="1" min="0" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Только dropdown</div>
+      <label class="is-inline" title="Флип вверх, если снизу не влезает">
+        <input type="checkbox" name="flip" checked /> Флип вверх
+      </label>
+    </div>
+
+    <!-- Menu -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Только menu</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="CSS-селектор якорного элемента">
+          Якорь (CSS)
+          <input type="text" name="anchor" placeholder=".hv-header" value="" />
+        </label>
+      </div>
+      <label class="is-inline" title="Занять всю оставшуюся высоту под якорём">
+        <input type="checkbox" name="fitRest" /> Заполнить остаток
+      </label>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="apply">Применить к демо</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="open" title="Открыть демо-модалку">Открыть</button>
+      <button type="button" class="hv-play__btn" data-action="downloadBase" title="Скачать script.js и style.scss">
+        Файлы
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copy" title="Скопировать Modaler.definePreset(...)">
+        Пресет
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать разметку модалки">
+        Разметка
+      </button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">
+      Демо использует <code>data-modal-settings="__play"</code>. Настройки → Применить → Открыть.
+    </p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvModalPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->

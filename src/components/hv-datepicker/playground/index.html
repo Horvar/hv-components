@@ -1,0 +1,91 @@
+<!-- ======= hv-datepicker playground ======= -->
+<form class="hv-play hv-play--datepicker" id="hvDpPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-datepicker</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Пресет -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Пресет</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="Имя пресета для DatePicker.definePreset(..); используется при копировании">
+          Имя пресета
+          <input type="text" name="presetName" value="dpSingle" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Настройки -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Настройки</div>
+      <div class="hv-play__row">
+        <label title="Режим выбора дат">
+          Режим
+          <select name="mode">
+            <option value="single" selected>single</option>
+            <option value="range">range</option>
+            <option value="multi">multi</option>
+          </select>
+        </label>
+        <label title="День начала недели">
+          Нач. недели
+          <select name="weekStartsOn">
+            <option value="1" selected>пн (1)</option>
+            <option value="0">вс (0)</option>
+          </select>
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Язык интерфейса">
+          Язык (i18n)
+          <select name="i18n">
+            <option value="auto" selected>auto</option>
+            <option value="ru">ru</option>
+            <option value="en">en</option>
+          </select>
+        </label>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="downloadBase">Скачать файлы</button>
+    <div class="hv-play__btn-row">
+      <button
+        type="button"
+        class="hv-play__btn"
+        data-action="copyPreset"
+        title="Скопировать DatePicker.definePreset(...)"
+      >
+        Пресет
+      </button>
+      <button
+        type="button"
+        class="hv-play__btn"
+        data-action="copyMarkup"
+        title="Скопировать разметку под выбранный режим"
+      >
+        Разметка
+      </button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">
+      Три пикера выше используют пресеты <code>dpSingle</code>, <code>dpRange</code>, <code>dpMulti</code>.
+    </p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvDpPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->

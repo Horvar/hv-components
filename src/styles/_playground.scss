@@ -1,0 +1,294 @@
+/* ===== HV Playground Panel — shared styles ===== */
+
+.hv-play {
+  --play-header-bg: #111;
+  --play-border: #e4e4e4;
+  --play-section-bg: #f2f2f2;
+  --play-input-border: #d6d6d6;
+  --play-btn-bg: #ebebeb;
+  --play-btn-border: #d8d8d8;
+  --play-text: #1a1a1a;
+  --play-muted: #888;
+
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 304px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--play-border);
+  border-radius: 14px;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 16px 40px rgba(0, 0, 0, 0.16);
+  font:
+    13px/1.45 system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+  z-index: 9999;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+.hv-play__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  background: var(--play-header-bg);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.hv-play__name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hv-play__toggle {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 1px 5px;
+  border-radius: 5px;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition:
+    color 0.12s,
+    background 0.12s;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ── Collapsed state ─────────────────────────────────── */
+.hv-play.is-collapsed .hv-play__body,
+.hv-play.is-collapsed .hv-play__actions {
+  display: none;
+}
+
+/* ── Scrollable body ─────────────────────────────────── */
+.hv-play__body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 58vh;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #d0d0d0 transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 4px;
+  }
+}
+
+/* ── Section groups ──────────────────────────────────── */
+.hv-play__section {
+  background: var(--play-section-bg);
+  border-radius: 10px;
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hv-play__section-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--play-muted);
+}
+
+/* ── Grid rows ───────────────────────────────────────── */
+.hv-play__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.hv-play__row--full {
+  grid-template-columns: 1fr;
+}
+
+/* ── Labels ──────────────────────────────────────────── */
+.hv-play label {
+  font-size: 11px;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: default;
+}
+
+.hv-play label.is-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* ── Inputs & selects ────────────────────────────────── */
+.hv-play input[type='number'],
+.hv-play input[type='text'],
+.hv-play select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--play-input-border);
+  background: #fff;
+  font: 12px/1.4 inherit;
+  color: var(--play-text);
+  outline: none;
+  transition: border-color 0.12s;
+
+  &:focus {
+    border-color: #888;
+  }
+}
+
+.hv-play input[type='checkbox'] {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin: 0;
+  accent-color: #111;
+}
+
+.hv-play input:disabled,
+.hv-play select:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* ── Quick preset pills ──────────────────────────────── */
+.hv-play__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.hv-play__quick button {
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  font: 11px/1 inherit;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.1s;
+
+  &:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+}
+
+/* ── Actions footer ──────────────────────────────────── */
+.hv-play__actions {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  border-top: 1px solid #ebebeb;
+}
+
+/* Primary action */
+.hv-play__btn-apply {
+  width: 100%;
+  padding: 8px 16px;
+  border-radius: 9px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font: 500 13px/1.4 inherit;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    transform 0.1s;
+
+  &:hover {
+    background: #2a2a2a;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Secondary button row */
+.hv-play__btn-row {
+  display: flex;
+  gap: 5px;
+}
+
+.hv-play__btn {
+  flex: 1;
+  padding: 5px 4px;
+  border-radius: 7px;
+  border: 1px solid var(--play-btn-border);
+  background: var(--play-btn-bg);
+  font: 11px/1.4 inherit;
+  color: #444;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    background 0.1s,
+    border-color 0.1s;
+
+  &:hover {
+    background: #e0e0e0;
+    border-color: #c4c4c4;
+  }
+}
+
+/* Hint text */
+.hv-play__hint {
+  font-size: 11px;
+  color: #999;
+  line-height: 1.45;
+  margin: 0;
+  padding: 0 2px;
+
+  code {
+    background: #ebebeb;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font:
+      10px/1.4 ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Consolas,
+      monospace;
+  }
+}

@@ -1,51 +1,58 @@
 @use 'styles/reset' as *;
-@use 'styles/hv-header' as *;
-@use 'styles/hv-modal' as *;
-@use 'styles/hv-modal-header-compatibility' as *;
-@use 'styles/hv-form' as *;
-@use 'styles/hv-datepicker' as *;
+@use 'styles/playground' as *;
+@use 'components/hv-header/style' as *;
+@use 'components/hv-modal/style' as *;
+@use 'components/hv-modal/header-compat' as *;
+@use 'components/hv-form/style' as *;
+@use 'components/hv-datepicker/style' as *;
+@use 'components/hv-select/style' as *;
 
 :root {
   --hv-header-top-offset: 200px; // JS может перезаписать при наличии .screen-top
 }
 
 body {
-  font-family: sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+  background: #141414;
 }
 
-button {
-  display: flex;
-}
+/* ── Demo page layout ─────────────────────────────── */
 
 main {
   display: flex;
   flex-direction: column;
-  gap: 12vh;
+  gap: 10vh;
 
-  background: #b6b6b6;
+  background: #141414;
 
-  padding: 6vh 0;
+  padding: 8vh 0;
 
   position: relative;
   z-index: 0;
 }
 
+/* Blurred placeholder images between demo sections */
 .pseudo-content {
-  width: 80%;
+  width: 72%;
   height: auto;
 
   object-fit: cover;
-
   margin: 0 auto;
+  display: block;
 
-  filter: blur(10px);
+  filter: blur(12px);
   transform: scaleX(-1);
 
   position: relative;
   z-index: -1;
 
-  opacity: 0.25;
-  mix-blend-mode: multiply;
+  opacity: 0.08;
 
   &:nth-child(2n) {
     transform: scaleY(-1);

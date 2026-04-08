@@ -1,0 +1,39 @@
+<!-- ======= hv-form playground ======= -->
+<form class="hv-play hv-play--form" id="hvFormPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-form</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Состав</div>
+      <p class="hv-play__hint" style="padding: 0">
+        Модули: <code>scripts/file.js</code>, <code>scripts/masks.js</code>, <code>scripts/password.js</code>,
+        <code>style.scss</code>. Подключай только нужные.
+      </p>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="downloadBase">Скачать файлы</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать базовую разметку формы">
+        Разметка
+      </button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvFormPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->

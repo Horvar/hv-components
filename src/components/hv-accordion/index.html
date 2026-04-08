@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accordion</title>
+  </head>
+  <body>
+    <header class="hv-header">
+      <div
+        class="hv-header__content"
+        style="display: flex; align-items: center; padding: 0 32px; box-sizing: border-box; gap: 32px"
+      ></div>
+    </header>
+
+    <main>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- demo accordion (keep inline styles intact) -->
+      <div
+        data-accordion-settings="__accPlay"
+        style="width: 80%; margin: 0 auto; background: #fff; padding: 0 32px; box-sizing: border-box"
+      >
+        <div data-accordion-item class="is-unfolded" style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 1</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              Таким образом, внедрение современных методик выявляет срочную потребность системы массового участия...
+            </p>
+          </div>
+        </div>
+        <div data-accordion-item style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 2</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              А также явные признаки победы институционализации указаны как претенденты на роль ключевых факторов...
+            </p>
+          </div>
+        </div>
+        <div data-accordion-item style="border-bottom: 1px solid #000">
+          <div data-accordion-button style="font-size: 32px; padding: 16px 0; cursor: pointer">Вопрос 3</div>
+          <div data-accordion-content>
+            <p style="line-height: 130%; max-width: 1000px; padding-bottom: 16px">
+              Каждый из нас понимает очевидную вещь: перспективное планирование требует от нас анализа благоприятных
+              перспектив...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

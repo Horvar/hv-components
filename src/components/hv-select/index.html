@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select</title>
+
+    <style>
+      /* обёртка демо — не трогаем инлайны внутри */
+      .demo-select-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        width: min(520px, 90%);
+        margin: 0 auto;
+        background: #fff;
+        padding: 32px;
+        border-radius: 12px;
+        box-sizing: border-box;
+      }
+
+      .demo-select-wrap label {
+        display: block;
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 6px;
+      }
+
+      .demo-select-wrap output {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: #999;
+        font-family: monospace;
+        min-height: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <div class="demo-select-wrap">
+        <!-- Demo 1: одиночный выбор -->
+        <div>
+          <label>Страна (single)</label>
+          <div data-select-settings="__selectPlay" style="font-size: 15px">
+            <input type="hidden" name="country" id="demoInput1" />
+            <div data-select-trigger>
+              <span data-select-label></span>
+              <span data-select-clear aria-hidden="true">×</span>
+              <span data-select-arrow aria-hidden="true">▾</span>
+            </div>
+            <div data-select-dropdown hidden>
+              <input data-select-search type="text" placeholder="Поиск..." />
+              <ul data-select-list>
+                <li data-select-option data-value="ru">Россия</li>
+                <li data-select-option data-value="us">США</li>
+                <li data-select-option data-value="de">Германия</li>
+                <li data-select-option data-value="fr">Франция</li>
+                <li data-select-option data-value="jp">Япония</li>
+                <li data-select-option data-value="cn">Китай</li>
+                <li data-select-option data-value="br">Бразилия</li>
+                <li data-select-option data-value="in">Индия</li>
+              </ul>
+            </div>
+          </div>
+          <output id="demoOut1">name="country" → </output>
+        </div>
+
+        <!-- Demo 2: множественный выбор -->
+        <div>
+          <label>Навыки (multiple + chips)</label>
+          <div data-select-settings="__selectPlayMulti" style="font-size: 15px">
+            <input type="hidden" name="skills" id="demoInput2" />
+            <div data-select-trigger>
+              <span data-select-label></span>
+              <span data-select-clear aria-hidden="true">×</span>
+              <span data-select-arrow aria-hidden="true">▾</span>
+            </div>
+            <div data-select-dropdown hidden>
+              <ul data-select-list>
+                <li data-select-option data-value="js">JavaScript</li>
+                <li data-select-option data-value="ts">TypeScript</li>
+                <li data-select-option data-value="react">React</li>
+                <li data-select-option data-value="vue">Vue</li>
+                <li data-select-option data-value="css">CSS / SCSS</li>
+                <li data-select-option data-value="node">Node.js</li>
+                <li data-select-option data-value="go" data-disabled>Go (недоступно)</li>
+              </ul>
+            </div>
+          </div>
+          <output id="demoOut2">name="skills" → </output>
+        </div>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      import { Select } from './script.js';
+
+      // статичный пресет для второго демо
+      Select.definePreset('__selectPlayMulti', {
+        mode: 'multiple',
+        chipMode: true,
+        clearable: true,
+        placeholder: 'Выберите навыки...',
+      });
+
+      // Live-вывод значений hidden input
+      document.getElementById('demoInput1').addEventListener('change', (e) => {
+        document.getElementById('demoOut1').textContent = `name="country" → ${e.target.value || '(пусто)'}`;
+      });
+      document.getElementById('demoInput2').addEventListener('change', (e) => {
+        document.getElementById('demoOut2').textContent = `name="skills" → ${e.target.value || '(пусто)'}`;
+      });
+
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

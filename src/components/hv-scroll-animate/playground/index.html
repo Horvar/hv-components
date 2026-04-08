@@ -1,0 +1,121 @@
+<!-- ======= hv-scroll-animate playground ======= -->
+<form class="hv-play hv-play--scroll-animate" id="hvsaPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-scroll-animate</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Пресет -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Пресет</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="Имя пресета; демо использует '__saPlay'">
+          Имя пресета
+          <input type="text" name="presetName" value="__saPlay" />
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Логи в консоль">
+          Отладка
+          <select name="debug">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Основные настройки -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Настройки</div>
+      <label class="is-inline" title="Анимация срабатывает один раз или при каждом входе">
+        <input type="checkbox" name="once" checked /> Однократно
+      </label>
+      <div class="hv-play__row">
+        <label title="Порог видимости 0–1 (0 = касание viewport)">
+          Порог (0–1)
+          <input type="number" name="threshold" value="0.2" step="0.05" min="0" max="1" />
+        </label>
+        <label title="Смещение зоны viewport (px): отрицательное = позже">
+          Отступ зоны
+          <input type="text" name="rootMargin" value="0px" placeholder="0px" />
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Задержка перед классом (мс)">
+          Задержка (мс)
+          <input type="number" name="delay" value="0" step="50" min="0" />
+        </label>
+        <label title="Задержка между элементами группы (мс)">
+          Stagger (мс)
+          <input type="number" name="stagger" value="100" step="50" min="0" />
+        </label>
+      </div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="CSS-класс, добавляемый при активации">
+          Класс активации
+          <input type="text" name="activeClass" value="is-animated" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Breakpoints -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Breakpoints</div>
+      <label class="is-inline" title="Адаптивные настройки для разных экранов">
+        <input type="checkbox" name="useBreakpoints" id="saUseBp" /> Использовать
+      </label>
+      <div class="hv-play__row">
+        <label title="Порог для mobile (<768px)">
+          Mobile
+          <input type="number" name="bpMobileThreshold" value="0.1" step="0.05" min="0" max="1" disabled />
+        </label>
+        <label title="Порог для tablet (768–1024px)">
+          Tablet
+          <input type="number" name="bpTabletThreshold" value="0.2" step="0.05" min="0" max="1" disabled />
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Порог для desktop (>1024px)">
+          Desktop
+          <input type="number" name="bpDesktopThreshold" value="0.3" step="0.05" min="0" max="1" disabled />
+        </label>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="apply">Применить к демо</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="downloadBase" title="Скачать script.js">Файлы</button>
+      <button
+        type="button"
+        class="hv-play__btn"
+        data-action="copyPreset"
+        title="Скопировать ScrollAnimate.definePreset(...)"
+      >
+        Пресет
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать разметку">Разметка</button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">
+      Демо использует <code>data-scroll-animate="__saPlay"</code>. Примени настройки и прокрути.
+    </p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvsaPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->

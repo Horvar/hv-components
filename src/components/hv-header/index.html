@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hv-header playground</title>
+  </head>
+  <body>
+    <!-- демо-хедер -->
+    <header class="hv-header">
+      <div class="hv-header__content" style="padding: 16px 24px; background: #fff; border-bottom: 2px solid #000">
+        <!-- любой контент -->
+      </div>
+    </header>
+
+    <main>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

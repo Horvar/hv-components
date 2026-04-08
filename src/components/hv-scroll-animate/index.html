@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScrollAnimate</title>
+
+    <style>
+      /* ===== demo animations ===== */
+      .demo-box {
+        width: 80%;
+        margin: 100px auto;
+        padding: 60px 32px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateY(60px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .demo-box.is-animated {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .demo-list {
+        width: 80%;
+        margin: 100px auto;
+        padding: 32px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .demo-list__item {
+        padding: 24px;
+        margin-bottom: 16px;
+        background: #f5f5f5;
+        border-radius: 12px;
+        opacity: 0;
+        transform: translateX(-40px);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .demo-list__item.is-animated {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .demo-card {
+        width: 80%;
+        margin: 100px auto;
+        padding: 60px 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        border-radius: 16px;
+        opacity: 0;
+        transform: scale(0.8) rotate(-5deg);
+        transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .demo-card.is-animated {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+      }
+
+      /* pseudo content */
+      .pseudo-content {
+        width: 100%;
+        height: 40vh;
+        object-fit: cover;
+        display: block;
+      }
+
+      body {
+        margin: 0;
+        background: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- demo: single element -->
+      <div data-scroll-animate="__saPlay" class="demo-box">
+        <h2 style="margin: 0 0 16px 0; font-size: 32px">Одиночный элемент</h2>
+        <p style="line-height: 1.6; margin: 0; color: #555">
+          Таким образом, внедрение современных методик выявляет срочную потребность системы массового участия. Прокрути
+          вниз, чтобы увидеть анимацию при появлении элемента в viewport.
+        </p>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- demo: stagger group -->
+      <div data-scroll-animate="__saPlay" class="demo-list">
+        <h2 style="margin: 0 0 24px 0; font-size: 32px">Группа с Stagger</h2>
+        <div data-scroll-item class="demo-list__item">
+          <h3 style="margin: 0 0 8px 0">Элемент 1</h3>
+          <p style="margin: 0; color: #666">Анимация с задержкой stagger</p>
+        </div>
+        <div data-scroll-item class="demo-list__item">
+          <h3 style="margin: 0 0 8px 0">Элемент 2</h3>
+          <p style="margin: 0; color: #666">Появляется после первого</p>
+        </div>
+        <div data-scroll-item class="demo-list__item">
+          <h3 style="margin: 0 0 8px 0">Элемент 3</h3>
+          <p style="margin: 0; color: #666">Появляется последним</p>
+        </div>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- demo: another single element -->
+      <div data-scroll-animate="__saPlay" class="demo-card">
+        <h2 style="margin: 0 0 16px 0; font-size: 32px">Карточка с анимацией</h2>
+        <p style="line-height: 1.6; margin: 0">
+          А также явные признаки победы институционализации указаны как претенденты на роль ключевых факторов. Эта
+          карточка имеет другую анимацию трансформации.
+        </p>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

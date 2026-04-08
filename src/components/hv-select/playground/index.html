@@ -1,0 +1,122 @@
+<!-- ======= hv-select playground ======= -->
+<form class="hv-play hv-play--select" id="hvSelectPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-select</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Пресет -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Пресет</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="Имя пресета; первое демо использует '__selectPlay'">
+          Имя пресета
+          <input type="text" name="presetName" value="__selectPlay" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Настройки -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Настройки</div>
+
+      <div class="hv-play__row">
+        <label title="Одиночный или множественный выбор">
+          Режим
+          <select name="mode">
+            <option value="single" selected>single</option>
+            <option value="multiple">multiple</option>
+          </select>
+        </label>
+        <label title="Текст при пустом выборе">
+          Плейсхолдер
+          <input type="text" name="placeholder" value="Выберите..." />
+        </label>
+      </div>
+
+      <div class="hv-play__row">
+        <label title="Показывать кнопку сброса выбора">
+          Clearable
+          <select name="clearable">
+            <option value="true" selected>true</option>
+            <option value="false">false</option>
+          </select>
+        </label>
+        <label title="Поле поиска внутри дропдауна">
+          Searchable
+          <select name="searchable">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="hv-play__row">
+        <label title="Для multiple: показывать выбранное как чипы">
+          Chip Mode
+          <select name="chipMode">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+        <label title="Для multiple: закрывать дропдаун после выбора">
+          Close on select
+          <select name="closeOnSelect">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="hv-play__row">
+        <label title="Разделитель значений в hidden input (для multiple)">
+          Delimiter
+          <input type="text" name="delimiter" value="," style="width: 48px" />
+        </label>
+        <label title="Текст когда поиск не дал результатов">
+          No results text
+          <input type="text" name="noResultsText" value="Ничего не найдено" />
+        </label>
+      </div>
+
+      <div class="hv-play__row">
+        <label title="Логи в консоль">
+          Отладка
+          <select name="debug">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="apply">Применить к демо</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="downloadBase" title="Скачать script.js и style.scss">
+        Файлы
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyPreset" title="Скопировать Select.definePreset(...)">
+        Пресет
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать разметку">Разметка</button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">Демо использует <code>data-select-settings="__selectPlay"</code>.</p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvSelectPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ======================================= -->

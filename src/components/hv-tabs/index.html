@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabs</title>
+
+    <!-- мини-вид для demo (не ломаем инлайны у превью) -->
+    <style>
+      .demo-tabs [data-tablist] {
+        display: flex;
+        gap: 12px;
+        border-bottom: 1px solid #000;
+      }
+      .demo-tabs [data-tab-button] {
+        appearance: none;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        padding: 8px 12px;
+        font: inherit;
+        color: #222;
+      }
+      .demo-tabs [data-tab-button].is-active {
+        background: #000;
+        color: #fff;
+      }
+      .demo-tabs [data-tab-panel] {
+        padding: 12px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+
+      <!-- demo tabs (сохраняем inline-правила у контейнера, если нужно) -->
+      <div
+        class="demo-tabs"
+        data-tabs-settings="__tabsPlay"
+        style="width: 80%; margin: 0 auto; background: #fff; padding: 0 32px; box-sizing: border-box"
+      >
+        <div data-tablist style="border-bottom: 1px solid #000">
+          <button data-tab-button data-tab="t1" class="is-active" style="font-size: 16px; padding: 12px 16px">
+            Раздел 1
+          </button>
+          <button data-tab-button data-tab="t2" style="font-size: 16px; padding: 12px 16px">Раздел 2</button>
+          <button data-tab-button data-tab="t3" style="font-size: 16px; padding: 12px 16px">Раздел 3</button>
+        </div>
+
+        <div data-tab-panel data-tab="t1">
+          <p style="line-height: 130%; max-width: 900px; padding: 12px 0 16px">
+            Контент первого таба. Здесь может быть что угодно — текст, таблицы, карточки.
+          </p>
+        </div>
+        <div data-tab-panel data-tab="t2" hidden>
+          <p style="line-height: 130%; max-width: 900px; padding: 12px 0 16px">
+            Контент второго таба. Всегда ровно один активный таб.
+          </p>
+        </div>
+        <div data-tab-panel data-tab="t3" hidden>
+          <p style="line-height: 130%; max-width: 900px; padding: 12px 0 16px">
+            Контент третьего таба. На тач-устройствах «hover» автоматически заменяется на «click».
+          </p>
+        </div>
+      </div>
+
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module">
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

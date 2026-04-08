@@ -1,0 +1,130 @@
+<!-- ======= hv-header playground ======= -->
+<form class="hv-play hv-play--header" id="hvHeaderPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-header</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Позиционирование -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Позиционирование</div>
+      <div class="hv-play__row">
+        <label title="static — в потоке; fixed — всегда; fixedAfter — после порога">
+          Режим
+          <select name="mode">
+            <option value="static">static</option>
+            <option value="fixed">fixed</option>
+            <option value="fixedAfter" selected>fixedAfter</option>
+          </select>
+        </label>
+        <label title="Порог (px) для fixedAfter">
+          Порог (px)
+          <input type="number" name="threshold" value="500" step="1" min="0" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Поведение скролла -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Поведение скролла</div>
+      <div class="hv-play__row">
+        <label title="none — без реакции; shrink — сжимается; reveal — скрывается">
+          Режим скролла
+          <select name="scrollBehavior">
+            <option value="none">none</option>
+            <option value="shrink">shrink</option>
+            <option value="reveal" selected>reveal</option>
+          </select>
+        </label>
+        <div></div>
+      </div>
+      <div class="hv-play__row">
+        <label title="Порог вверх (px): shrink→expand, reveal→show">
+          Вверх (px)
+          <input type="number" name="upDelta" value="24" step="1" min="0" />
+        </label>
+        <label title="Порог вниз (px): shrink→compact, reveal→hide">
+          Вниз (px)
+          <input type="number" name="downDelta" value="24" step="1" min="0" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Анимация FX -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Анимация (FX)</div>
+      <div class="hv-play__row">
+        <label title="Анимация при переходе static → fixed">
+          Анимация
+          <select name="fixFx">
+            <option value="none">none</option>
+            <option value="slide" selected>slide</option>
+            <option value="fade">fade</option>
+          </select>
+        </label>
+        <label title="Анимировать первый вход при mode=fixed" class="is-inline" style="padding-top: 16px">
+          <input type="checkbox" name="fixFxOnInit" checked /> При старте
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Длительность входа (мс)">
+          Вход (мс)
+          <input type="number" name="fixFxEnterDuration" value="220" step="10" min="0" />
+        </label>
+        <label title="Длительность выхода (мс)">
+          Выход (мс)
+          <input type="number" name="fixFxLeaveDuration" value="220" step="10" min="0" />
+        </label>
+      </div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="CSS timing-function: ease, linear, cubic-bezier(...)">
+          Плавность
+          <input type="text" name="fixFxEasing" value="ease" />
+        </label>
+      </div>
+    </div>
+
+    <!-- Дополнительно -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Дополнительно</div>
+      <div class="hv-play__row">
+        <label class="is-inline" title="Добавляет .is-top при верхней точке страницы">
+          <input type="checkbox" name="overlayAtTop" checked /> .is-top класс
+        </label>
+        <label class="is-inline" title="Логи в консоль"> <input type="checkbox" name="debug" /> Отладка </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="apply">Применить к демо</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="downloadBase" title="Скачать script.js и style.scss">
+        Файлы
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyInit" title="Скопировать JS-инициализацию">
+        Пресет
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать разметку хедера">
+        Разметка
+      </button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">
+      Демо берёт элемент <code>.hv-header</code>. «Применить» обновляет инстанс без пересоздания.
+    </p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvHeaderPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->

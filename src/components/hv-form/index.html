@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form</title>
+  </head>
+  <body>
+    <main>
+      <div class="form">
+        <!-- тут может быть <div class="form__body"> или <form class="form__body"> -->
+        <form class="form__body" action="#" method="post" novalidate>
+          <label class="form__field">
+            <span class="form__field-title">Текст</span>
+            <span class="form__field-tip">Обычный текст без ограничений</span>
+            <input class="form__control" type="text" placeholder="Плейсхолдер для текста" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field form-password" data-password-visible="false">
+            <span class="form__field-title">Пароль</span>
+            <span class="form__field-tip"
+              >Нажми на кнопку, чтобы показать/скрыть. Иконку необходимо делать через svg-спрайт. use:nth-child(1) -
+              невидим; use:nth-child(2) - видим; Сейчас используется временное закрашивание иконки, когда пароль
+              раскрыт</span
+            >
+
+            <span class="form__field-wrapper">
+              <input
+                class="form__control"
+                type="password"
+                name="password"
+                placeholder="Введите пароль"
+                autocomplete="current-password"
+              />
+
+              <button
+                class="form-password__toggle"
+                type="button"
+                aria-pressed="false"
+                aria-label="Показать пароль"
+                data-show="Показать пароль"
+                data-hide="Скрыть пароль"
+              >
+                <svg
+                  class="form-password__icon"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#i-eye"></use>
+                  <use href="#i-eye-off"></use>
+                </svg>
+              </button>
+            </span>
+
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Маски телефонов</span>
+            <span class="form__field-tip"
+              >Все три маски работают одинаково. Также, атрибут data-value будет получать все введенные значения единым
+              числом без кода страны</span
+            >
+            <input class="form__control" type="tel" placeholder="Телефон через type='tel'" />
+            <input class="form__control" type="text" data-type="tel" placeholder="Телефон через data-type='tel'" />
+            <input class="form__control" type="text" data-mask="phone" placeholder="Телефон через data-mask='phone'" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Маска с кастомным паттерном</span>
+            <span class="form__field-tip"
+              >Такие маски можно создавать прямо в разметке. Они также перенимают введенное значение в data-value</span
+            >
+            <input class="form__control" type="text" data-mask-pattern="+7 (999) 999-99-99" placeholder="Телефон" />
+            <input class="form__control" type="text" data-mask-pattern="99-999" placeholder="Код" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Почта</span>
+            <span class="form__field-tip"
+              >Для почты необязательно использовать маски и валидаторы, так как имена могут быть абсолютно
+              непредсказуемыми</span
+            >
+            <input class="form__control" type="email" placeholder="Плейсхолдер для почты" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__field">
+            <span class="form__field-title">Текстовая область</span>
+            <span class="form__field-tip">Обычная текстовая область без ограничений</span>
+            <textarea class="form__control" placeholder="Плейсхолдер для textarea"></textarea>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <!-- Поле: файлы (drag&drop + валидация) -->
+          <div
+            class="form__field form-file"
+            data-file-max="5MB"
+            data-file-accept=".png,.jpg,.pdf"
+            data-file-multiple="true"
+          >
+            <span class="form__field-title">Файлы</span>
+
+            <!-- нативный input прячем, он остаётся источником данных для формы -->
+            <input class="form-file__input" type="file" hidden accept=".png,.jpg,.pdf" multiple />
+
+            <!-- зона перетаскивания/клика -->
+            <div
+              class="form-file__drop"
+              tabindex="0"
+              role="button"
+              aria-label="Перетащите файлы или нажмите для выбора"
+            >
+              Зона для перетаскивания
+            </div>
+
+            <!-- статус и список -->
+            <div class="form-file__status">Файлы не выбраны</div>
+            <ul class="form-file__list" aria-live="polite"></ul>
+
+            <!-- действия -->
+            <div class="form-file__actions">
+              <button type="button" class="form-file__btn form-file__btn--pick">Выбрать</button>
+              <button type="button" class="form-file__btn form-file__btn--clear" disabled>Очистить</button>
+            </div>
+
+            <!-- контейнер ошибки (текст меняется скриптом) -->
+            <span class="form__error" hidden>Превышен допустимый размер файла</span>
+          </div>
+
+          <label class="form__check form-check">
+            <span class="form-check__wrapper">
+              <input class="form-check__input" type="checkbox" />
+              <svg class="form-check__icon">
+                <use href="#i-check-off"></use>
+                <use href="#i-check-on"></use>
+              </svg>
+              <span class="form-check__text"
+                >Иконку необходимо делать через svg-спрайт. use:nth-child(1) - unchecked; use:nth-child(2) - checked;
+                Сейчас используется временное закрашивание иконки, когда input:checked</span
+              >
+            </span>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <button class="form__submit" type="submit">Отправить через button</button>
+          <input class="form__submit" type="submit" value="Отправить через input" />
+          <div class="form__submit">Отправить через div</div>
+          <button class="form__submit is-disabled" type="submit" disabled>Disabled отправить через button</button>
+          <input class="form__submit is-disabled" type="submit" value="Disabled отправить через input" disabled />
+          <div class="form__submit is-disabled">Disabled отправить через div</div>
+
+          <label class="form__field is-error">
+            <span class="form__field-title">Ошибка</span>
+            <input class="form__control" type="text" placeholder="Плейсхолдер для ошибки" />
+            <span class="form__error">Текст ошибки</span>
+          </label>
+
+          <label class="form__check form-check is-error">
+            <span class="form-check__wrapper">
+              <input class="form-check__input" type="checkbox" />
+              <svg class="form-check__icon">
+                <use href="#i-check-off"></use>
+                <use href="#i-check-on"></use>
+              </svg>
+              <span class="form-check__text">Согласие с обработкой персональных данных. Вывод ошибки</span>
+            </span>
+            <span class="form__error">Текст ошибки</span>
+          </label>
+        </form>
+      </div>
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+      <img src="../../assets/images/bg-1.jpg" alt="" class="pseudo-content" />
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/components/hv-form/scripts/file.js"></script>
+    <script type="module">
+      import { initFileFields } from './scripts/file.js';
+      initFileFields();
+
+      import { initMasks } from './scripts/masks.js';
+      initMasks(document, { phoneMask: '+7 (999) 999-99-99' });
+
+      import { initPasswordToggles } from './scripts/password.js';
+      initPasswordToggles();
+    </script>
+
+    <script type="module">
+      const html = await fetch('./playground/index.html').then((r) => r.text());
+      document.body.insertAdjacentHTML('beforeend', html);
+      await import('./playground/script.js');
+    </script>
+  </body>
+</html>

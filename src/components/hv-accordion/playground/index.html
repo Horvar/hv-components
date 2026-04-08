@@ -1,0 +1,75 @@
+<!-- ======= hv-accordion playground ======= -->
+<form class="hv-play hv-play--accordion" id="hvAccPlay">
+  <div class="hv-play__header">
+    <span class="hv-play__name">hv-accordion</span>
+    <button type="button" class="hv-play__toggle" aria-label="Свернуть">−</button>
+  </div>
+
+  <div class="hv-play__body">
+    <!-- Пресет -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Пресет</div>
+      <div class="hv-play__row--full hv-play__row">
+        <label title="Имя пресета; демо всегда использует '__accPlay'">
+          Имя пресета
+          <input type="text" name="presetName" value="__accPlay" />
+        </label>
+      </div>
+      <div class="hv-play__row">
+        <label title="Лог-сообщения в консоль">
+          Отладка
+          <select name="debug">
+            <option value="false" selected>false</option>
+            <option value="true">true</option>
+          </select>
+        </label>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- Настройки -->
+    <div class="hv-play__section">
+      <div class="hv-play__section-title">Настройки</div>
+      <label class="is-inline" title="Только один открытый пункт внутри контейнера">
+        <input type="checkbox" name="singleOpen" checked /> Один открытый
+      </label>
+      <div class="hv-play__row">
+        <label title="Длительность анимации (мс)">
+          Длительность (мс)
+          <input type="number" name="duration" value="240" step="10" min="0" />
+        </label>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hv-play__actions">
+    <button type="button" class="hv-play__btn-apply" data-action="apply">Применить к демо</button>
+    <div class="hv-play__btn-row">
+      <button type="button" class="hv-play__btn" data-action="downloadBase" title="Скачать script.js">Файлы</button>
+      <button
+        type="button"
+        class="hv-play__btn"
+        data-action="copyPreset"
+        title="Скопировать Accordion.definePreset(...)"
+      >
+        Пресет
+      </button>
+      <button type="button" class="hv-play__btn" data-action="copyMarkup" title="Скопировать разметку">Разметка</button>
+      <button type="button" class="hv-play__btn" data-action="downloadReadme" title="Скачать README.md">README</button>
+    </div>
+    <p class="hv-play__hint">Демо использует <code>data-accordion-settings="__accPlay"</code>.</p>
+  </div>
+</form>
+
+<script>
+  (function () {
+    var p = document.querySelector('#hvAccPlay');
+    var t = p.querySelector('.hv-play__toggle');
+    t.addEventListener('click', function () {
+      var c = p.classList.toggle('is-collapsed');
+      t.textContent = c ? '+' : '−';
+    });
+  })();
+</script>
+<!-- ===================================== -->
